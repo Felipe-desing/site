@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprovar Cadastros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f2eabc;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #194756;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #54736e;
+            text-align: left;
+        }
+        th {
+            background: #54736e;
+            color: #f2eabc;
+        }
+        button {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .approve {
+            background: #54736e;
+            color: #f2eabc;
+        }
+        .approve:hover {
+            background: #3e5a54;
+        }
+        .reject {
+            background: #d32f2f;
+            color: #fff;
+        }
+        .reject:hover {
+            background: #b71c1c;
+        }
+        .flash-message {
+            padding: 10px;
+            background-color: #f2eabc;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            color: #194756;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #194756;
+            color: #f2eabc;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 20px;
+        }
+        .back-button:hover {
+            background: #123540;
+            transform: translateY(-2px);
+        }
+        .back-button:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Aprovar Cadastros Pendentes</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if pending_users %}
+            <table>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Profissão</th>
+                    <th>Município</th>
+                    <th>Ações</th>
+                </tr>
+                {% for user in pending_users %}
+                    <tr>
+                        <td>{{ user['nome'] }}</td>
+                        <td>{{ user['email'] }}</td>
+                        <td>{{ user['profissao'] }}</td>
+                        <td>{{ user['municipio'] }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('admin_approve') }}">
+                                <input type="hidden" name="user_id" value="{{ user['id'] }}">
+                                <button type="submit" name="action" value="approve" class="approve">Aprovar</button>
+                                <button type="submit" name="action" value="reject" class="reject">Rejeitar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>Nenhum cadastro pendente.</p>
+        {% endif %}
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('calculadora') }}" class="back-button">Voltar para a Calculadora</a>
+            <a href="{{ url_for('logout') }}" class="back-button" style="background: #d32f2f; margin-left: 10px;">Sair</a>
+        </div>
+
+</body>
+</html>

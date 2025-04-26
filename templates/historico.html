@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histórico da Gestante - Rede Cuidar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      background: linear-gradient(135deg, #f2eabc 0%, #ffffff 100%);
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23194756" fill-opacity="0.1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,245.3C960,224,1056,160,1152,149.3C1248,139,1344,181,1392,202.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path><path fill="%2354736e" fill-opacity="0.1" d="M0,256L48,245.3C96,235,192,213,288,213.3C384,213,480,235,576,256C672,277,768,299,864,277.3C960,256,1056,192,1152,181.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+      background-size: cover;
+      z-index: 0;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 40px 25px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 95%;
+      margin: 20px auto;
+      z-index: 1;
+      overflow-y: auto;
+    }
+
+    .container:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #194756;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #54736e;
+    }
+
+    label.required::after {
+      content: '*';
+      color: #d4a5a5;
+      margin-left: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #194756;
+      outline: none;
+    }
+
+    input:invalid:not(:focus) {
+      border-color: #d4a5a5;
+    }
+
+    .error {
+      border-color: #d4a5a5 !important;
+    }
+
+    .error-message {
+      color: #d4a5a5;
+      font-size: 0.85rem;
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+
+    .button {
+      background-color: #194756;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 5px;
+      transition: background-color 0.3s ease, opacity 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #54736e;
+    }
+
+    .button:disabled {
+      background-color: #a3b1af;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .logout-button {
+      background-color: #d4a5a5;
+    }
+
+    .logout-button:hover {
+      background-color: #b58383;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .flash-message {
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.9rem;
+      background-color: #f2eabc;
+      color: #194756;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      white-space: nowrap;
+    }
+
+    th {
+      background-color: #194756;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td {
+      color: #333;
+      font-size: 0.9rem;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2eabc;
+    }
+
+    tr:hover {
+      background-color: #e6f0e5;
+      transition: background-color 0.2s ease;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 20px;
+      color: #54736e;
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        overflow-y: auto;
+      }
+
+      .container {
+        padding: 20px;
+        margin: 10px auto;
+        max-width: 98%;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .container:hover {
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      th, td {
+        padding: 10px;
+        font-size: 0.85rem;
+      }
+
+      .button {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+      }
+
+      input {
+        padding: 8px;
+        font-size: 0.9rem;
+      }
+
+      .button-container {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Histórico da Gestante</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="form-group">
+      <label class="required">Nome Completo da Gestante</label>
+      <input type="text" id="nome_gestante" name="nome_gestante" required>
+      <div id="nome-error" class="error-message" style="display: none;">Por favor, preencha o nome da gestante.</div>
+    </div>
+    <div class="form-group">
+      <label class="required">Município</label>
+      <input type="text" id="municipio" name="municipio" required>
+      <div id="municipio-error" class="error-message" style="display: none;">Por favor, preencha o município.</div>
+    </div>
+    <div class="button-container">
+      <button id="buscar-btn" class="button" onclick="buscarHistorico()">Buscar Histórico</button>
+      <a href="/logout" class="button logout-button">Sair</a>
+    </div>
+
+    <div id="resultado">
+      <!-- A tabela será preenchida via JavaScript -->
+    </div>
+  </div>
+
+  <script>
+    function buscarHistorico() {
+      console.log("Iniciando busca do histórico...");
+
+      const nomeInput = document.getElementById('nome_gestante');
+      const municipioInput = document.getElementById('municipio');
+      const nome = nomeInput.value.trim();
+      const municipio = municipioInput.value.trim();
+      const resultado = document.getElementById('resultado');
+      const buscarBtn = document.getElementById('buscar-btn');
+      const nomeError = document.getElementById('nome-error');
+      const municipioError = document.getElementById('municipio-error');
+
+      // Resetar mensagens de erro
+      nomeError.style.display = 'none';
+      municipioError.style.display = 'none';
+      nomeInput.classList.remove('error');
+      municipioInput.classList.remove('error');
+
+      console.log("Valor de nome_gestante:", nome);
+      console.log("Valor de municipio:", municipio);
+
+      // Validação de campos obrigatórios
+      let hasError = false;
+      if (!nome) {
+        nomeError.style.display = 'block';
+        nomeInput.classList.add('error');
+        hasError = true;
+      }
+      if (!municipio) {
+        municipioError.style.display = 'block';
+        municipioInput.classList.add('error');
+        hasError = true;
+      }
+
+      if (hasError) {
+        console.log("Campos obrigatórios não preenchidos.");
+        return;
+      }
+
+      // Desabilitar botão e mostrar feedback
+      buscarBtn.disabled = true;
+      buscarBtn.textContent = 'Carregando...';
+      console.log("Enviando requisição para /buscar_historico com:", { nome_gestante: nome, municipio: municipio });
+
+      fetch('/buscar_historico', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nome_gestante: nome, municipio: municipio }),
+      })
+        .then(response => {
+          console.log("Resposta do servidor:", response.status, response.statusText);
+          if (!response.ok) {
+            throw new Error(`Erro ${response.status}: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log("Dados recebidos:", data);
+          buscarBtn.disabled = false;
+          buscarBtn.textContent = 'Buscar Histórico';
+
+          if (data.error) {
+            resultado.innerHTML = `<div class="flash-message">${data.error}</div>`;
+            return;
+          }
+
+          if (data.fichas.length === 0) {
+            resultado.innerHTML = '<p class="no-results">Nenhum registro encontrado para os dados informados.</p>';
+            return;
+          }
+
+          let html = `
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Data de Envio</th>
+                    <th>Nome da Gestante</th>
+                    <th>Código da Ficha</th>
+                    <th>Período Gestacional</th>
+                    <th>Pontuação Total</th>
+                    <th>Classificação de Risco</th>
+                    <th>Município</th>
+                    <th>UBS</th>
+                    <th>ACS</th>
+                    <th>Profissional</th>
+                  </tr>
+                </thead>
+                <tbody>
+          `;
+
+          data.fichas.forEach(ficha => {
+            console.log("Processando ficha:", ficha);
+            // Sanitizar dados
+            const escapeHTML = str => str ? String(str).replace(/[&<>"']/g, match => ({
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              '"': '&quot;',
+              "'": '&#39;'
+            })[match]) : 'N/A';
+
+            html += `
+              <tr>
+                <td>${escapeHTML(ficha.data_envio)}</td>
+                <td>${escapeHTML(ficha.nome_gestante)}</td>
+                <td>${escapeHTML(ficha.codigo_ficha)}</td>
+                <td>${escapeHTML(ficha.periodo_gestacional)}</td>
+                <td>${ficha.pontuacao_total || '0'}</td>
+                <td>${escapeHTML(ficha.classificacao_risco)}</td>
+                <td>${escapeHTML(ficha.municipio)}</td>
+                <td>${escapeHTML(ficha.ubs)}</td>
+                <td>${escapeHTML(ficha.acs)}</td>
+                <td>${escapeHTML(ficha.profissional)}</td>
+              </tr>
+            `;
+          });
+
+          html += `
+                </tbody>
+              </table>
+            </div>
+          `;
+          resultado.innerHTML = html;
+        })
+        .catch(error => {
+          console.error('Erro ao buscar histórico:', error);
+          buscarBtn.disabled = false;
+          buscarBtn.textContent = 'Buscar Histórico';
+          resultado.innerHTML = `
+            <div class="flash-message">Erro ao buscar o histórico: ${error.message}. Tente novamente.</div>
+          `;
+        });
+    }
+  </script>
+</body>
+</html>
