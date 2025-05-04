@@ -4,8 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Risco - Rede Cuidar</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    :root {
+      --primary: #194756;
+      --secondary: #54736e;
+      --accent: #f2eabc;
+      --light: #f8f9fa;
+      --white: #ffffff;
+      --text: #333333;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+      --sus-blue: #1892a4;
+      --sus-green: #5c9d4e;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -13,244 +27,622 @@
     }
 
     body {
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
       display: flex;
-      height: 100vh;
-      background: linear-gradient(135deg, #f2eabc 0%, #FFFFFF 100%);
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--white) 100%);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Logos do SUS decorativas */
+    .sus-logos {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
       overflow: hidden;
+    }
+
+    .sus-logo {
+      position: absolute;
+      bottom: -100px;
+      opacity: 0.3;
+      animation: rise 15s infinite ease-in;
+      background-image: url("{{ url_for('static', filename='imagens/logo-sus.png') }}");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    .sus-logo:nth-child(1) {
+      width: 70px;
+      height: 42px;
+      left: 10%;
+      animation-duration: 8s;
+    }
+
+    .sus-logo:nth-child(2) {
+      width: 56px;
+      height: 34px;
+      left: 20%;
+      animation-duration: 5s;
+      animation-delay: 1s;
+    }
+
+    .sus-logo:nth-child(3) {
+      width: 84px;
+      height: 50px;
+      left: 35%;
+      animation-duration: 7s;
+      animation-delay: 2s;
+    }
+
+    .sus-logo:nth-child(4) {
+      width: 98px;
+      height: 59px;
+      left: 50%;
+      animation-duration: 11s;
+      animation-delay: 0s;
+    }
+
+    .sus-logo:nth-child(5) {
+      width: 63px;
+      height: 38px;
+      left: 55%;
+      animation-duration: 6s;
+      animation-delay: 1s;
+    }
+
+    .sus-logo:nth-child(6) {
+      width: 77px;
+      height: 46px;
+      left: 65%;
+      animation-duration: 8s;
+      animation-delay: 3s;
+    }
+
+    .sus-logo:nth-child(7) {
+      width: 60px;
+      height: 36px;
+      left: 75%;
+      animation-duration: 7s;
+      animation-delay: 2s;
+    }
+
+    .sus-logo:nth-child(8) {
+      width: 91px;
+      height: 55px;
+      left: 80%;
+      animation-duration: 6s;
+      animation-delay: 1s;
+    }
+
+    @keyframes rise {
+      0% {
+        bottom: -100px;
+        transform: translateX(0);
+      }
+      50% {
+        transform: translateX(100px);
+      }
+      100% {
+        bottom: 1080px;
+        transform: translateX(-200px);
+      }
+    }
+
+    /* Layout principal */
+    .left-panel {
+      flex: 1;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      margin-right: 20px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .logo-text h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.2;
+      margin-bottom: 5px;
+    }
+
+    .logo-text p {
+      font-size: 1rem;
+      color: var(--secondary);
+      font-weight: 400;
+    }
+
+    .features {
+      margin-top: 40px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(25, 71, 86, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      color: var(--primary);
+    }
+
+    .feature-text h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 3px;
+    }
+
+    .feature-text p {
+      font-size: 0.9rem;
+      color: var(--secondary);
+    }
+
+    .right-panel {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-container {
+      background-color: var(--white);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 450px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .auth-header h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-header svg {
+      width: 28px;
+      height: 28px;
+      margin-right: 10px;
+    }
+
+    .auth-header p {
+      color: var(--secondary);
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
       position: relative;
     }
 
-    body::before {
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--primary);
+      font-size: 0.95rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      background-color: #f8f9fa;
+    }
+
+    .form-control:focus {
+      border-color: var(--secondary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(84, 115, 110, 0.2);
+      background-color: var(--white);
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 15px;
+      top: 40px;
+      color: var(--secondary);
+      cursor: pointer;
+    }
+
+    /* Estilo do botão animado */
+    .btn-container {
+      position: relative;
+      width: 100%;
+      height: 50px;
+      perspective: 1000px;
+      margin-top: 10px;
+    }
+
+    .btn-entrar {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--primary);
+      color: var(--accent);
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      box-shadow: 0 10px 30px rgba(25, 71, 86, 0.3);
+      transform-style: preserve-3d;
+      z-index: 1;
+    }
+
+    .btn-entrar::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23194756" fill-opacity="0.1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,245.3C960,224,1056,160,1152,149.3C1248,139,1344,181,1392,202.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path><path fill="%2354736e" fill-opacity="0.1" d="M0,256L48,245.3C96,235,192,213,288,213.3C384,213,480,235,576,256C672,277,768,299,864,277.3C960,256,1056,192,1152,181.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
-      background-size: cover;
-      z-index: 0;
+      background: var(--secondary);
+      clip-path: circle(0% at 50% 50%);
+      transition: clip-path 0.7s ease-in-out;
+      z-index: -1;
     }
 
-    .left {
-      flex: 1;
-      padding: 60px 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      color: #f2eabc;
-      z-index: 1;
+    .btn-entrar:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(25, 71, 86, 0.4);
     }
 
-    .left .logo {
+    .btn-entrar:hover::before {
+      clip-path: circle(100% at 50% 50%);
+    }
+
+    .btn-entrar:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-content {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .left .logo svg {
-      width: 50px;
-      height: 50px;
-      margin-right: 15px;
-    }
-
-    .left h1 {
-      font-size: 2.5rem;
-      font-weight: 600;
-      color: #194756;
-      margin-bottom: 10px;
-    }
-
-    .left p {
-      font-size: 1.1rem;
-      max-width: 400px;
-      color: #f2eabc;
-    }
-
-    .right {
-      flex: 1;
-      display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 30px;
-      z-index: 1;
-    }
-
-    .container {
-      background-color: #f2eabc;
-      padding: 40px 25px;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05);
+      gap: 10px;
       width: 100%;
-      max-width: 400px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      height: 100%;
+      transition: transform 0.5s ease;
     }
 
-    .container:hover {
-      transform: none;
-      box-shadow: none;
+    .btn-entrar:hover .btn-content {
+      animation: pulse 1s infinite alternate;
     }
 
-    .container h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #194756;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .icon {
+      transition: transform 0.3s ease;
     }
 
-    .container h2 svg {
-      width: 24px;
-      height: 24px;
-      margin-right: 8px;
+    .btn-entrar:hover .icon {
+      transform: translateX(5px);
+      animation: swing 0.8s infinite alternate;
     }
 
-    label {
-      display: block;
-      margin-top: 10px;
-      margin-bottom: 5px;
-      font-weight: 600;
-      color: #194756;
-    }
-
-    input[type="text"],
-    input[type="password"],
-    input[type="tel"],
-    input[type="email"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #54736e;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      transition: border-color 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    input[type="password"]:focus,
-    input[type="tel"]:focus,
-    input[type="email"]:focus {
-      border-color: #54736e;
-      outline: none;
-    }
-
-    .password-container {
-      position: relative;
-    }
-
-    .toggle-password {
+    .btn-entrar::after {
+      content: '';
       position: absolute;
-      top: 40%;
-      right: 10px;
-      transform: translateY(-50%);
-      cursor: pointer;
-      width: 20px;
-      height: 20px;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0) 60%
+      );
+      transform: rotate(30deg);
+      transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+      z-index: 2;
     }
 
-    input[type="submit"] {
-      width: 100%;
-      background-color: #54736e;
-      color: #f2eabc;
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      margin-top: 15px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s ease;
+    .btn-entrar:hover::after {
+      left: 100%;
+      top: 100%;
     }
 
-    input[type="submit"]:hover {
-      background-color: #0f2b36;
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
     }
 
-    .toggle-link {
+    @keyframes swing {
+      0% { transform: rotate(-10deg) translateX(5px); }
+      100% { transform: rotate(10deg) translateX(5px); }
+    }
+
+    @keyframes clickEffect {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    .auth-footer {
       text-align: center;
-      margin-top: 15px;
-      cursor: pointer;
-      color: #54736e;
-      font-weight: 500;
-      transition: color 0.3s ease;
+      margin-top: 20px;
     }
 
-    .toggle-link:hover {
-      color: #0f2b36;
+    .auth-link {
+      color: var(--secondary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.95rem;
+      display: inline-block;
+      margin: 0 5px;
+    }
+
+    .auth-link:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .divider-text {
+      padding: 0 10px;
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
+
+    .social-login {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f8f9fa;
+      color: var(--primary);
+      border: 1px solid #e0e0e0;
+      transition: var(--transition);
+    }
+
+    .social-btn:hover {
+      background: #e9ecef;
+      transform: translateY(-2px);
     }
 
     .hidden {
       display: none;
     }
 
-    .reduced-form {
-      max-height: 400px;
-      overflow-y: auto;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 768px) {
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    @media (max-width: 992px) {
       body {
         flex-direction: column;
       }
 
-      .left {
+      .left-panel, .right-panel {
         padding: 40px 20px;
+      }
+
+      .left-panel {
         text-align: center;
       }
 
-      .left .logo {
+      .logo-container {
         justify-content: center;
       }
 
-      .right {
-        padding: 20px;
+      .features {
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
       }
 
-      .container {
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.05);
+      .auth-container {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .left-panel {
+        padding: 30px 15px;
       }
 
-      .container:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+      .logo-container {
+        flex-direction: column;
+        text-align: center;
       }
+
+      .logo-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
+
+      .auth-container {
+        padding: 30px 20px;
+      }
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      z-index: 0;
+    }
+
+    .wave svg {
+      position: relative;
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 150px;
+    }
+
+    .wave .shape-fill {
+      fill: rgba(25, 71, 86, 0.05);
     }
   </style>
 </head>
 <body>
-  <!-- LADO ESQUERDO -->
-  <div class="left">
-    <div class="logo">
-      <svg viewBox="0 0 100 100" fill="none" stroke="#194756" stroke-width="4">
-        <path d="M50 20c-15 0-27 12-27 27s12 27 27 27 27-12 27-27-12-27-27-27z" fill="#54736e" fill-opacity="0.2"/>
-        <path d="M50 30c-10 0-18 8-18 18s8 18 18 18 18-8 18-18-8-18-18-18z" fill="#f2eabc"/>
-        <path d="M50 40c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9z" fill="#194756"/>
-        <path d="M50 20c-15 0-27 12-27 27" stroke-linecap="round"/>
-      </svg>
-      <h1>Sistema de<br>Estratificação de Risco</h1>
+  <!-- Logos do SUS decorativas -->
+  <div class="sus-logos">
+    <div class="sus-logo"></div>
+    <div class="sus-logo"></div>
+    <div class="sus-logo"></div>
+    <div class="sus-logo"></div>
+    <div class="sus-logo"></div>
+    <div class="sus-logo"></div>
+    <div class="sus-logo"></div>
+    <div class="sus-logo"></div>
+  </div>
+
+  <!-- Painel esquerdo -->
+  <div class="left-panel">
+    <div class="logo-container">
+      <div class="logo-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <div class="logo-text">
+        <h1>Sistema de Estratificação de Risco Gestacional</h1>
+        <p>Rede Cuidar - Saúde Integrada</p>
+      </div>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <div class="feature-text">
+          <h3>Avaliação Rápida</h3>
+          <p>Identificação imediata do nível de risco gestacional</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="feature-text">
+          <h3>Dados em Tempo Real</h3>
+          <p>Monitoramento contínuo dos dados</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <div class="feature-text">
+          <h3>Segurança Garantida</h3>
+          <p>Proteção dos dados sensíveis dos pacientes</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- LADO DIREITO -->
-  <div class="right">
-    <div class="container">
-      <!-- LOGIN -->
-      <div id="login-form">
-        <h2>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#194756" stroke-width="2">
-            <path d="M12 2a5 5 0 0 0-5 5v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm0 2a3 3 0 0 1 3 3v2h-6V7a3 3 0 0 1 3-3z"/>
-          </svg>
-          Entrar no Sistema
-        </h2>
+  <!-- Painel direito -->
+  <div class="right-panel">
+    <div class="auth-container">
+      <!-- Formulário de Login -->
+      <div id="login-form" class="fade-in">
+        <div class="auth-header">
+          <h2>
+            <i class="fas fa-sign-in-alt"></i>
+            Acesse sua conta
+          </h2>
+          <p>Entre com suas credenciais para acessar o sistema</p>
+        </div>
 
         <!-- Exibe mensagens de feedback -->
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
-              <div style="padding: 10px; background-color: #f2eabc; border-radius: 6px; margin-bottom: 10px; color: #194756;">
+              <div style="padding: 12px; background-color: #f8f9fa; border-radius: 10px; margin-bottom: 20px; color: var(--primary); border-left: 4px solid var(--secondary);">
+                <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
                 {{ message }}
               </div>
             {% endfor %}
@@ -258,125 +650,162 @@
         {% endwith %}
 
         <form method="POST" action="/login">
-          <label for="email">E-mail</label>
-          <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
-
-          <label for="password">Senha</label>
-          <div class="password-container">
-            <input type="password" id="password" name="password" required>
-            <svg class="toggle-password" onclick="togglePassword('password')" id="eye-icon-password" viewBox="0 0 24 24" fill="none" stroke="#54736e" stroke-width="2">
-              <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle class="eye-open" cx="12" cy="12" r="3"/>
-              <path class="eye-closed" d="M1 1l22 22M4 4c-2 2-3 5-3 8s4 8 11 8 11-5 11-8-4-8-11-8c-2 0-4 .5-6 1.5" style="display: none;"/>
-            </svg>
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="seu@email.com" required>
           </div>
 
-          <input type="submit" value="Entrar">
+          <div class="form-group">
+            <label for="password">Senha</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+            <i class="fas fa-eye input-icon" onclick="togglePassword('password')" id="eye-icon-password"></i>
+          </div>
+
+          <div class="btn-container">
+            <button type="submit" class="btn-entrar" id="entrarBtn">
+              <div class="btn-content">
+                <span class="icon"><i class="fas fa-sign-in-alt"></i></span>
+                <span>Entrar</span>
+              </div>
+              <div class="particles" id="particles"></div>
+            </button>
+          </div>
         </form>
-        <div class="toggle-link" onclick="showForm('register-form')">Não tem conta? Cadastre-se</div>
-        <div class="toggle-link" onclick="showForm('reset-password-form')">Esqueceu sua senha?</div>
+
+        <div class="auth-footer">
+          <span>Não tem uma conta?</span>
+          <a class="auth-link" onclick="showForm('register-form')">Cadastre-se</a>
+          <span>ou</span>
+          <a class="auth-link" onclick="showForm('reset-password-form')">Recuperar senha</a>
+        </div>
       </div>
 
-      <!-- CADASTRO -->
-      <div id="register-form" class="hidden reduced-form">
-        <h2>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#194756" stroke-width="2">
-            <path d="M12 2a5 5 0 0 0-5 5v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm0 2a3 3 0 0 1 3 3v2h-6V7a3 3 0 0 1 3-3z"/>
-          </svg>
-          Cadastro
-        </h2>
-        <form method="POST" action="/register">
-          <label for="nome">Nome completo</label>
-          <input type="text" id="nome" name="nome" required oninput="this.value = this.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '')">
+      <!-- Formulário de Cadastro -->
+      <div id="register-form" class="hidden fade-in">
+        <div class="auth-header">
+          <h2>
+            <i class="fas fa-user-plus"></i>
+            Criar nova conta
+          </h2>
+          <p>Preencha os dados abaixo para se cadastrar</p>
+        </div>
 
-          <label for="cpf">CPF</label>
-          <input type="text" id="cpf" name="cpf" inputmode="numeric" placeholder="999.999.999-99" required>
-
-          <label for="profissao">Profissão</label>
-          <input type="text" id="profissao" name="profissao" required oninput="this.value = this.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '')">
-
-          <label for="telefone">Telefone</label>
-          <input type="text" id="telefone" name="telefone" inputmode="numeric" placeholder="(99) 9 9999-9999" required>
-
-          <label for="email">E-mail</label>
-          <input type="email" id="email" name="email">
-
-          <label for="municipio">Município</label>
-          <input type="text" id="municipio" name="municipio" required oninput="this.value = this.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '')">
-
-          <label for="cnes">CNES</label>
-          <input type="text" id="cnes" name="cnes" inputmode="numeric" pattern="[0-9]*" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-
-          <label for="senha">Senha</label>
-          <div class="password-container">
-            <input type="password" id="senha" name="senha" required>
-            <svg class="toggle-password" onclick="togglePassword('senha')" id="eye-icon-senha" viewBox="0 0 24 24" fill="none" stroke="#54736e" stroke-width="2">
-              <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle class="eye-open" cx="12" cy="12" r="3"/>
-              <path class="eye-closed" d="M1 1l22 22M4 4c-2 2-3 5-3 8s4 8 11 8 11-5 11-8-4-8-11-8c-2 0-4 .5-6 1.5" style="display: none;"/>
-            </svg>
+        <form method="POST" action="/register" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
+          <div class="form-group">
+            <label for="nome">Nome completo</label>
+            <input type="text" id="nome" name="nome" class="form-control" placeholder="João da Silva" required oninput="this.value = this.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '')">
           </div>
 
-          <label for="confirmar">Confirmar senha</label>
-          <div class="password-container">
-            <input type="password" id="confirmar" name="confirmar" required>
-            <svg class="toggle-password" onclick="togglePassword('confirmar')" id="eye-icon-confirmar" viewBox="0 0 24 24" fill="none" stroke="#54736e" stroke-width="2">
-              <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle class="eye-open" cx="12" cy="12" r="3"/>
-              <path class="eye-closed" d="M1 1l22 22M4 4c-2 2-3 5-3 8s4 8 11 8 11-5 11-8-4-8-11-8c-2 0-4 .5-6 1.5" style="display: none;"/>
-            </svg>
+          <div class="form-group">
+            <label for="cpf">CPF</label>
+            <input type="text" id="cpf" name="cpf" class="form-control" placeholder="999.999.999-99" inputmode="numeric" required>
           </div>
 
-          <input type="submit" value="Cadastrar">
+          <div class="form-group">
+            <label for="profissao">Profissão</label>
+            <input type="text" id="profissao" name="profissao" class="form-control" placeholder="Médico/Enfermeiro" required oninput="this.value = this.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '')">
+          </div>
+
+          <div class="form-group">
+            <label for="telefone">Telefone</label>
+            <input type="text" id="telefone" name="telefone" class="form-control" placeholder="(99) 9 9999-9999" inputmode="numeric" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="seu@email.com">
+          </div>
+
+          <div class="form-group">
+            <label for="municipio">Município</label>
+            <input type="text" id="municipio" name="municipio" class="form-control" placeholder="Sua cidade" required oninput="this.value = this.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '')">
+          </div>
+
+          <div class="form-group">
+            <label for="cnes">CNES</label>
+            <input type="text" id="cnes" name="cnes" class="form-control" placeholder="Número do CNES" inputmode="numeric" pattern="[0-9]*" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+          </div>
+
+          <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" class="form-control" placeholder="••••••••" required>
+            <i class="fas fa-eye input-icon" onclick="togglePassword('senha')" id="eye-icon-senha"></i>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmar">Confirmar senha</label>
+            <input type="password" id="confirmar" name="confirmar" class="form-control" placeholder="••••••••" required>
+            <i class="fas fa-eye input-icon" onclick="togglePassword('confirmar')" id="eye-icon-confirmar"></i>
+          </div>
+
+          <div class="btn-container">
+            <button type="submit" class="btn-entrar" id="cadastrarBtn">
+              <div class="btn-content">
+                <span class="icon"><i class="fas fa-user-plus"></i></span>
+                <span>Cadastrar</span>
+              </div>
+              <div class="particles" id="particles-cadastrar"></div>
+            </button>
+          </div>
         </form>
-        <div class="toggle-link" onclick="showForm('login-form')">Já tem conta? Fazer login</div>
+
+        <div class="auth-footer">
+          <span>Já tem uma conta?</span>
+          <a class="auth-link" onclick="showForm('login-form')">Faça login</a>
+        </div>
       </div>
 
-      <!-- REDEFINIÇÃO DE SENHA -->
-      <div id="reset-password-form" class="hidden">
-        <h2>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#194756" stroke-width="2">
-            <path d="M12 2a5 5 0 0 0-5 5v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm0 2a3 3 0 0 1 3 3v2h-6V7a3 3 0 0 1 3-3z"/>
-          </svg>
-          Redefinir Senha
-        </h2>
+      <!-- Formulário de Redefinição de Senha -->
+      <div id="reset-password-form" class="hidden fade-in">
+        <div class="auth-header">
+          <h2>
+            <i class="fas fa-key"></i>
+            Redefinir senha
+          </h2>
+          <p>Informe seu e-mail para receber as instruções</p>
+        </div>
+
         <form method="POST" action="{{ url_for('reset_password') }}">
-          <label for="reset-email">E-mail</label>
-          <input type="email" id="reset-email" name="email" placeholder="Digite seu e-mail" required>
-
-          <label for="old-password">Senha Antiga</label>
-          <div class="password-container">
-            <input type="password" id="old-password" name="old_password" required>
-            <svg class="toggle-password" onclick="togglePassword('old-password')" id="eye-icon-old-password" viewBox="0 0 24 24" fill="none" stroke="#54736e" stroke-width="2">
-              <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle class="eye-open" cx="12" cy="12" r="3"/>
-              <path class="eye-closed" d="M1 1l22 22M4 4c-2 2-3 5-3 8s4 8 11 8 11-5 11-8-4-8-11-8c-2 0-4 .5-6 1.5" style="display: none;"/>
-            </svg>
+          <div class="form-group">
+            <label for="reset-email">E-mail</label>
+            <input type="email" id="reset-email" name="email" class="form-control" placeholder="seu@email.com" required>
           </div>
 
-          <label for="new-password">Nova Senha</label>
-          <div class="password-container">
-            <input type="password" id="new-password" name="new_password" required>
-            <svg class="toggle-password" onclick="togglePassword('new-password')" id="eye-icon-new-password" viewBox="0 0 24 24" fill="none" stroke="#54736e" stroke-width="2">
-              <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle class="eye-open" cx="12" cy="12" r="3"/>
-              <path class="eye-closed" d="M1 1l22 22M4 4c-2 2-3 5-3 8s4 8 11 8 11-5 11-8-4-8-11-8c-2 0-4 .5-6 1.5" style="display: none;"/>
-            </svg>
+          <div class="form-group">
+            <label for="old-password">Senha atual</label>
+            <input type="password" id="old-password" name="old_password" class="form-control" placeholder="••••••••" required>
+            <i class="fas fa-eye input-icon" onclick="togglePassword('old-password')" id="eye-icon-old-password"></i>
           </div>
 
-          <label for="confirm-password">Confirmar Nova Senha</label>
-          <div class="password-container">
-            <input type="password" id="confirm-password" name="confirm_password" required>
-            <svg class="toggle-password" onclick="togglePassword('confirm-password')" id="eye-icon-confirm-password" viewBox="0 0 24 24" fill="none" stroke="#54736e" stroke-width="2">
-              <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle class="eye-open" cx="12" cy="12" r="3"/>
-              <path class="eye-closed" d="M1 1l22 22M4 4c-2 2-3 5-3 8s4 8 11 8 11-5 11-8-4-8-11-8c-2 0-4 .5-6 1.5" style="display: none;"/>
-            </svg>
+          <div class="form-group">
+            <label for="new-password">Nova senha</label>
+            <input type="password" id="new-password" name="new_password" class="form-control" placeholder="••••••••" required>
+            <i class="fas fa-eye input-icon" onclick="togglePassword('new-password')" id="eye-icon-new-password"></i>
           </div>
 
-          <input type="submit" value="Redefinir Senha">
+          <div class="form-group">
+            <label for="confirm-password">Confirmar nova senha</label>
+            <input type="password" id="confirm-password" name="confirm_password" class="form-control" placeholder="••••••••" required>
+            <i class="fas fa-eye input-icon" onclick="togglePassword('confirm-password')" id="eye-icon-confirm-password"></i>
+          </div>
+
+          <div class="btn-container">
+            <button type="submit" class="btn-entrar" id="redefinirBtn">
+              <div class="btn-content">
+                <span class="icon"><i class="fas fa-sync-alt"></i></span>
+                <span>Redefinir senha</span>
+              </div>
+              <div class="particles" id="particles-redefinir"></div>
+            </button>
+          </div>
         </form>
-        <div class="toggle-link" onclick="showForm('login-form')">Voltar ao Login</div>
+
+        <div class="auth-footer">
+          <a class="auth-link" onclick="showForm('login-form')">
+            <i class="fas fa-arrow-left" style="margin-right: 5px;"></i>
+            Voltar ao login
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -386,24 +815,26 @@
       document.getElementById("login-form").classList.add("hidden");
       document.getElementById("register-form").classList.add("hidden");
       document.getElementById("reset-password-form").classList.add("hidden");
-      document.getElementById(formId).classList.remove("hidden");
+      
+      const formToShow = document.getElementById(formId);
+      formToShow.classList.remove("hidden");
+      formToShow.classList.add("fade-in");
+      
       window.scrollTo(0, 0);
     }
 
     function togglePassword(fieldId) {
       const passwordField = document.getElementById(fieldId);
       const eyeIcon = document.getElementById(`eye-icon-${fieldId}`);
-      const eyeOpen = eyeIcon.querySelectorAll(".eye-open");
-      const eyeClosed = eyeIcon.querySelector(".eye-closed");
-
+      
       if (passwordField.type === "password") {
         passwordField.type = "text";
-        eyeOpen.forEach(path => path.style.display = "none");
-        eyeClosed.style.display = "block";
+        eyeIcon.classList.remove("fa-eye");
+        eyeIcon.classList.add("fa-eye-slash");
       } else {
         passwordField.type = "password";
-        eyeOpen.forEach(path => path.style.display = "block");
-        eyeClosed.style.display = "none";
+        eyeIcon.classList.remove("fa-eye-slash");
+        eyeIcon.classList.add("fa-eye");
       }
     }
 
@@ -468,6 +899,97 @@
         alert("As senhas novas não coincidem.");
       }
     });
+
+    // Efeito de animação ao carregar
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('login-form').classList.add('fade-in');
+    });
+
+    // Script para botões animados
+    const buttons = [
+      { id: 'entrarBtn', particlesId: 'particles', successText: 'Acessando...' },
+      { id: 'cadastrarBtn', particlesId: 'particles-cadastrar', successText: 'Cadastrando...' },
+      { id: 'redefinirBtn', particlesId: 'particles-redefinir', successText: 'Redefinindo...' }
+    ];
+
+    buttons.forEach(({ id, particlesId, successText }) => {
+      const btn = document.getElementById(id);
+      const particlesContainer = document.getElementById(particlesId);
+
+      if (btn && particlesContainer) {
+        btn.addEventListener('mouseenter', () => {
+          createParticles(particlesContainer);
+        });
+
+        btn.addEventListener('click', (e) => {
+          const clickEffect = document.createElement('div');
+          clickEffect.style.position = 'absolute';
+          clickEffect.style.width = '20px';
+          clickEffect.style.height = '20px';
+          clickEffect.style.background = 'rgba(242, 234, 188, 0.7)';
+          clickEffect.style.borderRadius = '50%';
+          clickEffect.style.pointerEvents = 'none';
+          clickEffect.style.left = `${e.offsetX - 10}px`;
+          clickEffect.style.top = `${e.offsetY - 10}px`;
+          clickEffect.style.animation = 'clickEffect 0.5s ease-out forwards';
+
+          btn.appendChild(clickEffect);
+
+          setTimeout(() => {
+            clickEffect.remove();
+          }, 500);
+
+          setTimeout(() => {
+            btn.innerHTML = `<i class="fas fa-check"></i> ${successText}`;
+            btn.style.pointerEvents = 'none';
+          }, 200);
+        });
+      }
+    });
+
+    function createParticles(particlesContainer) {
+      for (let i = 0; i < 5; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        particle.style.width = '5px';
+        particle.style.height = '5px';
+        particle.style.background = 'rgba(242, 234, 188, 0.5)';
+        particle.style.borderRadius = '50%';
+        particle.style.left = '50%';
+        particle.style.top = '50%';
+        particle.style.animation = 'float 1.5s ease-out forwards';
+
+        const angle = Math.random() * 360;
+        const distance = Math.random() * 20 + 10;
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+          @keyframes float {
+            0% {
+              transform: translate(0, 0) rotate(0deg);
+              opacity: 0;
+            }
+            10% {
+              opacity: 0.7;
+            }
+            100% {
+              transform: translate(
+                ${Math.cos(angle) * distance}px,
+                ${Math.sin(angle) * distance}px
+              ) rotate(${Math.random() * 360}deg);
+              opacity: 0;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+        particlesContainer.appendChild(particle);
+
+        setTimeout(() => {
+          particle.remove();
+          style.remove();
+        }, 1500);
+      }
+    }
   </script>
 </body>
 </html>
