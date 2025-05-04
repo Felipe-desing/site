@@ -3,130 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aprovar Cadastros</title>
+    <title>Aprovar Cadastros - Painel Administrativo</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #194756;
+            --secondary-color: #54736e;
+            --accent-color: #f2eabc;
+            --danger-color: #d32f2f;
+            --danger-hover: #b71c1c;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f2eabc;
+            background: var(--accent-color);
+            color: var(--text-dark);
+            line-height: 1.6;
             padding: 20px;
         }
+        
         .container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 800px;
+            background: var(--text-light);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            max-width: 1000px;
             margin: 0 auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--box-shadow);
         }
+        
         h2 {
-            color: #194756;
-            margin-bottom: 20px;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
         }
+        
         table {
             width: 100%;
             border-collapse: collapse;
+            margin: 25px 0;
         }
+        
         th, td {
-            padding: 10px;
-            border: 1px solid #54736e;
+            padding: 12px 15px;
             text-align: left;
+            border-bottom: 1px solid #dddddd;
         }
+        
         th {
-            background: #54736e;
-            color: #f2eabc;
+            background: var(--secondary-color);
+            color: var(--accent-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
         }
-        button {
-            padding: 8px;
+        
+        tr:hover {
+            background-color: rgba(242, 234, 188, 0.2);
+        }
+        
+        .button {
+            padding: 8px 16px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
-            transition: background-color 0.3s;
-        }
-        .approve {
-            background: #54736e;
-            color: #f2eabc;
-        }
-        .approve:hover {
-            background: #3e5a54;
-        }
-        .reject {
-            background: #d32f2f;
-            color: #fff;
-        }
-        .reject:hover {
-            background: #b71c1c;
-        }
-        .flash-message {
-            padding: 10px;
-            background-color: #f2eabc;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            color: #194756;
-        }
-        .back-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #194756;
-            color: #f2eabc;
-            text-decoration: none;
-            border-radius: 6px;
             font-weight: 600;
-            transition: background-color 0.3s, transform 0.2s;
-            margin-top: 20px;
+            transition: var(--transition);
+            margin-right: 8px;
         }
-        .back-button:hover {
+        
+        .button--approve {
+            background: var(--secondary-color);
+            color: var(--accent-color);
+        }
+        
+        .button--approve:hover {
+            background: #3e5a54;
+            transform: translateY(-1px);
+        }
+        
+        .button--reject {
+            background: var(--danger-color);
+            color: var(--text-light);
+        }
+        
+        .button--reject:hover {
+            background: var(--danger-hover);
+            transform: translateY(-1px);
+        }
+        
+        .flash-message {
+            padding: 12px 15px;
+            background-color: var(--accent-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: flex-start;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .button--nav {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: var(--accent-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .button--nav:hover {
             background: #123540;
             transform: translateY(-2px);
+            box-shadow: var(--box-shadow);
         }
-        .back-button:active {
+        
+        .button--nav:active {
             transform: translateY(0);
+        }
+        
+        .button--logout {
+            background: var(--danger-color);
+        }
+        
+        .button--logout:hover {
+            background: var(--danger-hover);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--secondary-color);
+            font-size: 1.1em;
+        }
+        
+        .form-inline {
+            display: inline;
+        }
+        
+        @media (max-width: 768px) {
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Aprovar Cadastros Pendentes</h2>
+        <header>
+            <h2>Aprovar Cadastros Pendentes</h2>
+        </header>
+        
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="flash-message">{{ message }}</div>
+                    <div class="flash-message" role="alert">
+                        {{ message }}
+                    </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        {% if pending_users %}
-            <table>
-                <tr>
-                    <th>Nome</th>
-                    <th>E-mail</th>
-                    <th>Profissão</th>
-                    <th>Município</th>
-                    <th>Ações</th>
-                </tr>
-                {% for user in pending_users %}
-                    <tr>
-                        <td>{{ user['nome'] }}</td>
-                        <td>{{ user['email'] }}</td>
-                        <td>{{ user['profissao'] }}</td>
-                        <td>{{ user['municipio'] }}</td>
-                        <td>
-                            <form method="POST" action="{{ url_for('admin_approve') }}">
-                                <input type="hidden" name="user_id" value="{{ user['id'] }}">
-                                <button type="submit" name="action" value="approve" class="approve">Aprovar</button>
-                                <button type="submit" name="action" value="reject" class="reject">Rejeitar</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-            <p>Nenhum cadastro pendente.</p>
-        {% endif %}
-        <div style="margin-top: 20px;">
-            <a href="{{ url_for('calculadora') }}" class="back-button">Voltar para a Calculadora</a>
-            <a href="{{ url_for('logout') }}" class="back-button" style="background: #d32f2f; margin-left: 10px;">Sair</a>
-        </div>
-
+        
+        <main>
+            {% if pending_users %}
+                <table aria-label="Usuários pendentes de aprovação">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Profissão</th>
+                            <th>Município</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in pending_users %}
+                            <tr>
+                                <td>{{ user['nome'] }}</td>
+                                <td>{{ user['email'] }}</td>
+                                <td>{{ user['profissao'] }}</td>
+                                <td>{{ user['municipio'] }}</td>
+                                <td>
+                                    <form class="form-inline" method="POST" action="{{ url_for('admin_approve') }}">
+                                        <input type="hidden" name="user_id" value="{{ user['id'] }}">
+                                        <button type="submit" name="action" value="approve" class="button button--approve" aria-label="Aprovar usuário">
+                                            Aprovar
+                                        </button>
+                                        <button type="submit" name="action" value="reject" class="button button--reject" aria-label="Rejeitar usuário">
+                                            Rejeitar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="empty-state">
+                    <p>Nenhum cadastro pendente no momento.</p>
+                </div>
+            {% endif %}
+        </main>
+        
+        <footer>
+            <div class="button-group">
+                <a href="{{ url_for('calculadora') }}" class="button--nav">
+                    Voltar para a Calculadora
+                </a>
+                <a href="{{ url_for('logout') }}" class="button--nav button--logout">
+                    Sair do Sistema
+                </a>
+            </div>
+        </footer>
+    </div>
 </body>
 </html>
