@@ -4,36 +4,77 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Risco Gestacional</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    :root {
+      --primary: #194756;
+      --secondary: #54736e;
+      --accent: #f2eabc;
+      --light: #f8f9fa;
+      --white: #ffffff;
+      --text: #333333;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f2eabc;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--accent);
       margin: 0;
       display: flex;
       height: 100vh;
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
     }
 
     .left {
-      background-color: #194756;
-      color: #f2eabc;
+      background: linear-gradient(135deg, var(--primary) 0%, #0f2b36 100%);
+      color: var(--accent);
       flex: 1;
-      padding: 60px 30px;
+      padding: 60px 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
+      border-right: 3px solid var(--secondary);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      position: relative;
+      z-index: 1;
+      animation: fadeInLeft 1s ease-out;
+    }
+
+    .gestante-img {
+      max-width: 150px;
+      width: 100%;
+      height: auto;
+      margin: 0 auto 20px;
+      display: block;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.5s ease-out;
     }
 
     .left h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
+      font-weight: 700;
       margin: 0;
-      display: inline-block;
+      line-height: 1.2;
+      text-align: center;
     }
 
     .left p {
-      font-size: 1.2rem;
-      margin-top: 10px;
+      font-size: 1.1rem;
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 400;
+      opacity: 0.9;
     }
 
     .right {
@@ -45,10 +86,11 @@
     }
 
     .container {
-      background-color: #f2eabc;
+      background-color: var(--white);
       border-radius: 12px;
       padding: 30px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.5s ease-out;
     }
 
     .flash-message {
@@ -56,48 +98,62 @@
       margin-bottom: 20px;
       border-radius: 6px;
       text-align: center;
+      font-size: 0.95rem;
     }
 
     .flash-message.success {
       background-color: #e6f0e5;
-      color: #194756;
+      color: var(--primary);
     }
 
     .flash-message.danger {
       background-color: #f2eabc;
-      color: #194756;
+      color: var(--primary);
     }
 
     .flash-message.warning {
       background-color: #f2eabc;
-      color: #194756;
+      color: var(--primary);
     }
 
     h2, h3 {
-      color: #54736e;
+      color: var(--secondary);
       margin-top: 20px;
+      margin-bottom: 30px;
+      font-weight: 600;
     }
 
     label {
       display: block;
       margin-top: 10px;
-      font-weight: bold;
+      font-weight: 500;
+      color: var(--primary);
     }
 
     label.required::after {
       content: '*';
-      color: #194756;
+      color: var(--primary);
       margin-left: 5px;
     }
 
     input, select {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin-top: 5px;
       margin-bottom: 10px;
       border-radius: 6px;
-      border: 1px solid #54736e;
+      border: 1px solid var(--secondary);
       box-sizing: border-box;
+      font-size: 0.95rem;
+      background-color: #f8f9fa;
+      transition: var(--transition);
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(84, 115, 110, 0.2);
+      background-color: var(--white);
     }
 
     input[readonly] {
@@ -112,27 +168,30 @@
       display: flex;
       align-items: center;
       padding: 12px 16px;
-      background-color: #f2eabc;
-      border: 1px solid #54736e;
+      background-color: var(--white);
+      border: 1px solid var(--secondary);
       border-radius: 6px;
       margin-bottom: 10px;
       cursor: pointer;
+      transition: var(--transition);
     }
 
     .checkbox-item:hover {
       background-color: #e6f0e5;
+      transform: translateY(-2px);
     }
 
     .checkbox-item.selected {
-      background-color: #194756;
-      color: #f2eabc;
-      border-color: #194756;
+      background-color: var(--primary);
+      color: var(--accent);
+      border-color: var(--primary);
     }
 
     .checkbox-item span {
       flex: 1;
       text-align: left;
       padding-right: 20px;
+      font-size: 0.95rem;
     }
 
     .periodo-gestacional .checkbox-item {
@@ -144,42 +203,173 @@
     }
 
     .periodo-gestacional .checkbox-item.selected {
-      background-color: #194756;
-      color: #f2eabc;
-      border-color: #194756;
+      background-color: var(--primary);
+      color: var(--accent);
+      border-color: var(--primary);
     }
 
     .score-box {
       margin-top: 30px;
       padding: 15px;
       background-color: #e6f0e5;
-      border: 1px solid #54736e;
+      border: 1px solid var(--secondary);
       border-radius: 8px;
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 1rem;
     }
 
-    .button {
-      background-color: #54736e;
-      color: #f2eabc;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
+    .btn-container {
+      position: relative;
+      width: 100%;
+      max-width: 200px;
+      height: 50px;
+      perspective: 1000px;
       margin-top: 20px;
     }
 
-    .button:hover {
-      background-color: #0f2b36;
+    .btn-entrar {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: var(--accent);
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      box-shadow: var(--shadow);
+      transform-style: preserve-3d;
+      z-index: 1;
+    }
+
+    .btn-entrar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--secondary), var(--primary));
+      clip-path: circle(0% at 50% 50%);
+      transition: clip-path 0.7s ease-in-out;
+      z-index: -1;
+    }
+
+    .btn-entrar:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(25, 71, 86, 0.4);
+    }
+
+    .btn-entrar:hover::before {
+      clip-path: circle(100% at 50% 50%);
+    }
+
+    .btn-entrar:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s ease;
+    }
+
+    .btn-entrar:hover .btn-content {
+      animation: pulse 1s infinite alternate;
+    }
+
+    .icon {
+      transition: transform 0.3s ease;
+    }
+
+    .btn-entrar:hover .icon {
+      transform: rotate(360deg);
+    }
+
+    .btn-entrar::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0) 60%
+      );
+      transform: rotate(30deg);
+      transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+      z-index: 2;
+    }
+
+    .btn-entrar:hover::after {
+      left: 100%;
+      top: 100%;
+    }
+
+    /* Estilo específico para o botão Histórico */
+    #historicoBtn {
+      background: var(--primary) !important;
+      background-image: none !important;
+      color: var(--white) !important;
+      transform: translateY(0);
+      box-shadow: var(--shadow);
+      position: relative;
+      opacity: 1;
+    }
+
+    #historicoBtn::before {
+      content: none !important;
+    }
+
+    #historicoBtn:hover {
+      background: var(--primary) !important;
+      background-image: none !important;
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(25, 71, 86, 0.4);
+    }
+
+    #historicoBtn .btn-content {
+      color: var(--white) !important;
+      animation: none;
+    }
+
+    #historicoBtn:hover .btn-content {
+      animation: pulse 1s infinite alternate;
+      color: var(--white) !important;
+    }
+
+    #historicoBtn::after {
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0) 60%
+      );
+    }
+
+    #particles-historico div {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    #historicoBtn div[style*="position: absolute"][style*="width: 20px"] {
+      background: rgba(25, 71, 86, 0.7);
     }
 
     .info-icon {
       font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
-      color: #f2eabc;
-      background-color: #194756;
-      border: 2px solid #f2eabc;
+      color: var(--accent);
+      background-color: var(--primary);
+      border: 2px solid var(--accent);
       border-radius: 50%;
       width: 24px;
       height: 24px;
@@ -188,40 +378,69 @@
       justify-content: center;
       margin-left: 10px;
       vertical-align: middle;
+      transition: var(--transition);
+      z-index: 10;
+    }
+
+    .info-icon:hover {
+      background-color: var(--secondary);
     }
 
     .info-tooltip {
       display: none;
-      position: absolute;
-      background-color: #f2eabc;
+      position: fixed;
+      background-color: var(--white);
       padding: 10px;
-      border: 1px solid #54736e;
+      border: 1px solid var(--secondary);
       border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow);
       font-size: 0.9rem;
       width: 300px;
-      color: #194756;
+      max-width: 80vw;
+      color: var(--primary);
       z-index: 1000;
-      top: 100%;
-      left: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .info-tooltip p {
+      margin-bottom: 10px;
+    }
+
+    .close-tooltip {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--primary);
     }
 
     .info-container {
       position: relative;
       display: inline-block;
       vertical-align: middle;
+      z-index: 10;
     }
 
     .info-container:hover .info-tooltip {
       display: block;
+      opacity: 1;
     }
 
     .imc-calculator {
       margin-top: 20px;
       padding: 15px;
-      background-color: #f2eabc;
+      background-color: var(--white);
       border-radius: 8px;
-      border: 1px solid #54736e;
+      border: 1px solid var(--secondary);
     }
 
     .imc-calculator label {
@@ -235,7 +454,8 @@
 
     .imc-result {
       margin-top: 10px;
-      font-weight: bold;
+      font-weight: 600;
+      color: var(--primary);
     }
 
     .disabled-section {
@@ -257,54 +477,129 @@
     }
 
     .modal-content {
-      background-color: #f2eabc;
+      background-color: var(--white);
       padding: 20px;
       border-radius: 8px;
       width: 400px;
       text-align: center;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow);
     }
 
     .modal-content p {
       margin: 0 0 20px;
-      color: #194756;
+      color: var(--primary);
+      font-size: 0.95rem;
     }
 
-    .modal-content button {
-      background-color: #54736e;
-      color: #f2eabc;
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .modal-buttons button {
       padding: 10px 20px;
       border: none;
       border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
       cursor: pointer;
+      transition: var(--transition);
     }
 
-    .modal-content button:hover {
-      background-color: #0f2b36;
+    .modal-buttons .confirm-btn {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+
+    .modal-buttons .confirm-btn:hover {
+      background-color: var(--secondary);
+    }
+
+    .modal-buttons .cancel-btn {
+      background-color: #dc3545;
+      color: var(--white);
+    }
+
+    .modal-buttons .cancel-btn:hover {
+      background-color: #c82333;
     }
 
     .carregar-ficha {
       margin-bottom: 20px;
-      padding: 15px;
-      background-color: #f2eabc;
-      border-radius: 8px;
-      border: 1px solid #54736e;
     }
 
-    .carregar-ficha input {
-      width: 200px;
-      display: inline-block;
-      margin-right: 10px;
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @media (max-width: 992px) {
+      body {
+        flex-direction: column;
+      }
+
+      .left, .right {
+        padding: 30px 20px;
+      }
+
+      .left {
+        border-right: none;
+        border-bottom: 3px solid var(--secondary);
+      }
+
+      .gestante-img {
+        max-width: 120px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .left {
+        padding: 20px 15px;
+      }
+
+      .left h1 {
+        font-size: 2rem;
+      }
+
+      .gestante-img {
+        max-width: 100px;
+      }
+
+      .right {
+        padding: 20px 15px;
+      }
+
+      .modal-content {
+        width: 90%;
+      }
+
+      .info-tooltip {
+        width: 90vw;
+      }
     }
   </style>
 </head>
 <body>
   <div class="left">
-    <div style="display: flex; align-items: center;">
+    <img src="{{ url_for('static', filename='imagens/gestante.png') }}" alt="Gestante" class="gestante-img">
+    <div style="display: flex; align-items: center; justify-content: center;">
       <h1>Classificação de<br>Risco Gestacional</h1>
       <div class="info-container">
         <span class="info-icon">i</span>
         <div class="info-tooltip">
+          <button class="close-tooltip">×</button>
           <p><strong>Risco Habitual:</strong> Atendimento de pré-natal na APS pelo Enfermeiro intercalado com médico.</p>
           <p><strong>Médio Risco:</strong> Atendimento de pré-natal na APS pelo médico intercalado com enfermeiro e monitoramento pela REDE CUIDAR.</p>
           <p><strong>Alto Risco:</strong> Encaminhamento ao PNAR e contato com plantonista da REDE CUIDAR até a primeira consulta.</p>
@@ -325,7 +620,15 @@
       {% endwith %}
       <h2>Dados da Gestante</h2>
       <div class="carregar-ficha">
-        <a href="historico" class="button">Histórico</a>
+        <div class="btn-container">
+          <button type="button" class="btn-entrar" id="historicoBtn" onclick="window.location.href='historico'" aria-label="Ver histórico">
+            <div class="btn-content">
+              <span class="icon"><i class="fas fa-history"></i></span>
+              <span>Histórico</span>
+            </div>
+            <div class="particles" id="particles-historico"></div>
+          </button>
+        </div>
       </div>
       <form id="form-risco" action="{{ url_for('salvar_calculadora') }}" method="POST">
         <input type="hidden" name="pontuacao_total" id="pontuacao_total" value="{{ ficha.pontuacao_total if ficha else '' }}">
@@ -371,7 +674,15 @@
           <label class="required">Data de Envio (DD/MM/YYYY)</label>
           <input type="text" name="data_envio" id="data_envio" required placeholder="DD/MM/YYYY" maxlength="10" oninput="mascaraData(this)" value="{{ ficha.data_envio if ficha else '' }}">
 
-          <button type="button" class="button" onclick="continuar()">Continuar</button>
+          <div class="btn-container">
+            <button type="button" class="btn-entrar" id="continuarBtn" onclick="continuar()" aria-label="Continuar para próximas seções">
+              <div class="btn-content">
+                <span class="icon"><i class="fas fa-arrow-right"></i></span>
+                <span>Continuar</span>
+              </div>
+              <div class="particles" id="particles-continuar"></div>
+            </button>
+          </div>
         </div>
 
         <div class="checkbox-group section disabled-section" id="section1">
@@ -417,7 +728,15 @@
             <input type="number" id="peso" name="peso" step="0.1" min="0" value="{{ ficha.peso if ficha and ficha.peso else '' }}">
             <label>Altura (cm):</label>
             <input type="number" id="altura" name="altura" step="1" min="0" value="{{ ficha.altura if ficha and ficha.altura else '' }}">
-            <button type="button" class="button" onclick="calcularIMC()">Calcular IMC</button>
+            <div class="btn-container">
+              <button type="button" class="btn-entrar" id="calcularImcBtn" onclick="calcularIMC()" aria-label="Calcular IMC">
+                <div class="btn-content">
+                  <span class="icon"><i class="fas fa-calculator"></i></span>
+                  <span>Calcular IMC</span>
+                </div>
+                <div class="particles" id="particles-imc"></div>
+              </button>
+            </div>
             <div class="imc-result" id="imc-result">IMC: {{ ficha.imc if ficha and ficha.imc else '---' }}</div>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
@@ -429,123 +748,59 @@
             <input type="hidden" name="avaliacao_nutricional" value="sobrepeso" {% if ficha and 'sobrepeso' in ficha.avaliacao_nutricional %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Obesidade grau I e II (IMC 30-39.9)</span>
+            <span>Obesidade Grau I (IMC 30-39.9)</span>
             <input type="hidden" name="avaliacao_nutricional" value="obesidade1" {% if ficha and 'obesidade1' in ficha.avaliacao_nutricional %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Obesidade Mórbida (IMC ≥ 40)</span>
+            <span>Obesidade Grau II ou III (IMC ≥ 40)</span>
             <input type="hidden" name="avaliacao_nutricional" value="obesidade_morbida" {% if ficha and 'obesidade_morbida' in ficha.avaliacao_nutricional %}class="selected"{% endif %}>
           </div>
         </div>
 
         <div class="checkbox-group section disabled-section" id="section3">
-          <h3>3. Comorbidades prévias à gestação</h3>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>AIDS/HIV</span>
-            <input type="hidden" name="comorbidades" value="hiv" {% if ficha and 'hiv' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Alterações da Tireoide</span>
-            <input type="hidden" name="comorbidades" value="tireoide" {% if ficha and 'tireoide' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Diabetes Mellitus</span>
-            <input type="hidden" name="comorbidades" value="diabetes" {% if ficha and 'diabetes' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Endocrinopatias sem controle</span>
-            <input type="hidden" name="comorbidades" value="endocrino" {% if ficha and 'endocrino' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Cardiopatia Diagnóstica</span>
-            <input type="hidden" name="comorbidades" value="cardiopatia" {% if ficha and 'cardiopatia' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Câncer Diagnosticado</span>
-            <input type="hidden" name="comorbidades" value="cancer" {% if ficha and 'cancer' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Cirurgia Bariátrica há menos de 1 ano</span>
-            <input type="hidden" name="comorbidades" value="cirurgia_bariatrica" {% if ficha and 'cirurgia_bariatrica' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Doenças Autoimunes (colagenoses)</span>
-            <input type="hidden" name="comorbidades" value="autoimunes" {% if ficha and 'autoimunes' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Doenças Psiquiátricas</span>
-            <input type="hidden" name="comorbidades" value="doencas_psiquiatricas" {% if ficha and 'doencas_psiquiatricas' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Doença Renal Grave</span>
-            <input type="hidden" name="comorbidades" value="renal_grave" {% if ficha and 'renal_grave' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
+          <h3>3. Hábitos e Estilo de Vida</h3>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
             <span>Dependência de Drogas</span>
-            <input type="hidden" name="comorbidades" value="dependencia_drogas" {% if ficha and 'dependencia_drogas' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Epilepsia e doenças neurológicas graves</span>
-            <input type="hidden" name="comorbidades" value="epilepsia" {% if ficha and 'epilepsia' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Hepatites</span>
-            <input type="hidden" name="comorbidades" value="hepatites" {% if ficha and 'hepatites' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>HAS crônica controlada</span>
-            <input type="hidden" name="comorbidades" value="has_controlada" {% if ficha and 'has_controlada' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>HAS crônica complicada</span>
-            <input type="hidden" name="comorbidades" value="has_complicada" {% if ficha and 'has_complicada' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Ginecopatia</span>
-            <input type="hidden" name="comorbidades" value="ginecopatia" {% if ficha and 'ginecopatia' in ficha.comorbidades %}class="selected"{% endif %}>
-          </div>
-          <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Outras condições graves</span>
-            <input type="hidden" name="comorbidades" value="outras_condicoes" {% if ficha and 'outras_condicoes' in ficha.comorbidades %}class="selected"{% endif %}>
+            <input type="hidden" name="habitos" value="dependencia_drogas" {% if ficha and 'dependencia_drogas' in ficha.habitos %}class="selected"{% endif %}>
           </div>
         </div>
 
         <div class="checkbox-group section disabled-section" id="section4">
           <h3>4. História Obstétrica Prévia</h3>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>≥ 5 Gestações prévias</span>
+            <span>≥ 5 Gestações</span>
             <input type="hidden" name="historia_obstetrica" value="5_gestacoes" {% if ficha and '5_gestacoes' in ficha.historia_obstetrica %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>≥ 3 Abortos espontâneos</span>
+            <span>≥ 3 Abortos</span>
             <input type="hidden" name="historia_obstetrica" value="3_abortos" {% if ficha and '3_abortos' in ficha.historia_obstetrica %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Intervalo interpartal < 2 anos</span>
+            <span>Intervalo entre gestações < 2 anos</span>
             <input type="hidden" name="historia_obstetrica" value="intervalo_menor_2_anos" {% if ficha and 'intervalo_menor_2_anos' in ficha.historia_obstetrica %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Morte fetal ou neonatal prévio</span>
+            <span>Morte fetal ou neonatal anterior</span>
             <input type="hidden" name="historia_obstetrica" value="morte_fetal" {% if ficha and 'morte_fetal' in ficha.historia_obstetrica %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Prematuridade prévia</span>
+            <span>Prematuridade anterior</span>
             <input type="hidden" name="historia_obstetrica" value="prematuridade" {% if ficha and 'prematuridade' in ficha.historia_obstetrica %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Baixo peso ao nascer prévio</span>
+            <span>Baixo peso ao nascer anterior</span>
             <input type="hidden" name="historia_obstetrica" value="baixo_peso_nascer" {% if ficha and 'baixo_peso_nascer' in ficha.historia_obstetrica %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Macrossomia prévia</span>
+            <span>Macrossomia fetal anterior</span>
             <input type="hidden" name="historia_obstetrica" value="macrossomia" {% if ficha and 'macrossomia' in ficha.historia_obstetrica %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Isoimunização</span>
+            <span>Isoimunização Rh</span>
             <input type="hidden" name="historia_obstetrica" value="isoimunizacao" {% if ficha and 'isoimunizacao' in ficha.historia_obstetrica %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Cesariana prévia</span>
+            <span>1 Cesariana prévia</span>
             <input type="hidden" name="historia_obstetrica" value="cesariana_previa" {% if ficha and 'cesariana_previa' in ficha.historia_obstetrica %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
@@ -555,65 +810,137 @@
         </div>
 
         <div class="checkbox-group section disabled-section" id="section5">
-          <h3>5. Condições Gestacionais Atuais</h3>
+          <h3>5. Condições Clínicas Pré-existentes</h3>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Gestação Múltipla</span>
-            <input type="hidden" name="condicoes_gestacionais" value="gestacao_multipla" {% if ficha and 'gestacao_multipla' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
+            <span>HIV</span>
+            <input type="hidden" name="condicoes_clinicas" value="hiv" {% if ficha and 'hiv' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Apresentação Anômala</span>
-            <input type="hidden" name="condicoes_gestacionais" value="apresentacao_anomala" {% if ficha and 'apresentacao_anomala' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
+            <span>Alterações da tireoide</span>
+            <input type="hidden" name="condicoes_clinicas" value="tireoide" {% if ficha and 'tireoide' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Restrição de Crescimento Fetal</span>
-            <input type="hidden" name="condicoes_gestacionais" value="restricao_crescimento" {% if ficha and 'restricao_crescimento' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
+            <span>Diabetes</span>
+            <input type="hidden" name="condicoes_clinicas" value="diabetes" {% if ficha and 'diabetes' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Macrossomia Fetal</span>
-            <input type="hidden" name="condicoes_gestacionais" value="macrossomia_fetal" {% if ficha and 'macrossomia_fetal' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
+            <span>Outros distúrbios endócrinos</span>
+            <input type="hidden" name="condicoes_clinicas" value="endocrino" {% if ficha and 'endocrino' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Alteração de Líquido Amniótico</span>
-            <input type="hidden" name="condicoes_gestacionais" value="alteracao_liquido" {% if ficha and 'alteracao_liquido' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
+            <span>Cardiopatia</span>
+            <input type="hidden" name="condicoes_clinicas" value="cardiopatia" {% if ficha and 'cardiopatia' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Anemia Grave</span>
+            <span>Câncer</span>
+            <input type="hidden" name="condicoes_clinicas" value="cancer" {% if ficha and 'cancer' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Cirurgia bariátrica prévia</span>
+            <input type="hidden" name="condicoes_clinicas" value="cirurgia_bariatrica" {% if ficha and 'cirurgia_bariatrica' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Doenças autoimunes</span>
+            <input type="hidden" name="condicoes_clinicas" value="autoimunes" {% if ficha and 'autoimunes' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Doenças psiquiátricas</span>
+            <input type="hidden" name="condicoes_clinicas" value="doencas_psiquiatricas" {% if ficha and 'doencas_psiquiatricas' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Doença renal grave</span>
+            <input type="hidden" name="condicoes_clinicas" value="renal_grave" {% if ficha and 'renal_grave' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Epilepsia</span>
+            <input type="hidden" name="condicoes_clinicas" value="epilepsia" {% if ficha and 'epilepsia' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Hepatites virais</span>
+            <input type="hidden" name="condicoes_clinicas" value="hepatites" {% if ficha and 'hepatites' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Hipertensão arterial controlada</span>
+            <input type="hidden" name="condicoes_clinicas" value="has_controlada" {% if ficha and 'has_controlada' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Hipertensão arterial complicada</span>
+            <input type="hidden" name="condicoes_clinicas" value="has_complicada" {% if ficha and 'has_complicada' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Ginecopatia significativa</span>
+            <input type="hidden" name="condicoes_clinicas" value="ginecopatia" {% if ficha and 'ginecopatia' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Outras condições graves</span>
+            <input type="hidden" name="condicoes_clinicas" value="outras_condicoes" {% if ficha and 'outras_condicoes' in ficha.condicoes_clinicas %}class="selected"{% endif %}>
+          </div>
+        </div>
+
+        <div class="checkbox-group section disabled-section" id="section6">
+          <h3>6. Condições Obstétricas Atuais</h3>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Gestação múltipla</span>
+            <input type="hidden" name="condicoes_obstetricas" value="gestacao_multipla" {% if ficha and 'gestacao_multipla' in ficha.condicoes_obstetricas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Apresentação anômala</span>
+            <input type="hidden" name="condicoes_obstetricas" value="apresentacao_anomala" {% if ficha and 'apresentacao_anomala' in ficha.condicoes_obstetricas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Restrição de crescimento fetal</span>
+            <input type="hidden" name="condicoes_obstetricas" value="restricao_crescimento" {% if ficha and 'restricao_crescimento' in ficha.condicoes_obstetricas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Macrossomia fetal</span>
+            <input type="hidden" name="condicoes_obstetricas" value="macrossomia_fetal" {% if ficha and 'macrossomia_fetal' in ficha.condicoes_obstetricas %}class="selected"{% endif %}>
+          </div>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Alteração de líquido amniótico</span>
+            <input type="hidden" name="condicoes_obstetricas" value="alteracao_liquido" {% if ficha and 'alteracao_liquido' in ficha.condicoes_obstetricas %}class="selected"{% endif %}>
+          </div>
+        </div>
+
+        <div class="checkbox-group section disabled-section" id="section7">
+          <h3>7. Condições Clínicas Gestacionais</h3>
+          <div class="checkbox-item" onclick="toggleCheckbox(this)">
+            <span>Anemia grave</span>
             <input type="hidden" name="condicoes_gestacionais" value="anemia_grave" {% if ficha and 'anemia_grave' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Carcinoma na Gestação</span>
+            <span>Carcinoma na gestação</span>
             <input type="hidden" name="condicoes_gestacionais" value="carcinoma_gestacao" {% if ficha and 'carcinoma_gestacao' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Cardiopatia na Gestação</span>
+            <span>Cardiopatia na gestação</span>
             <input type="hidden" name="condicoes_gestacionais" value="cardiopatia_gestacao" {% if ficha and 'cardiopatia_gestacao' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Diabetes Gestacional</span>
+            <span>Diabetes gestacional</span>
             <input type="hidden" name="condicoes_gestacionais" value="diabetes_gestacional" {% if ficha and 'diabetes_gestacional' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Hipertensão Gestacional</span>
+            <span>Hipertensão gestacional</span>
             <input type="hidden" name="condicoes_gestacionais" value="hipertensao_gestacional" {% if ficha and 'hipertensao_gestacional' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Pré-eclâmpsia/Eclâmpsia</span>
+            <span>Pré-eclâmpsia ou eclâmpsia</span>
             <input type="hidden" name="condicoes_gestacionais" value="pre_eclampsia" {% if ficha and 'pre_eclampsia' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Hemorragia Grave</span>
+            <span>Hemorragia grave</span>
             <input type="hidden" name="condicoes_gestacionais" value="hemorragia_grave" {% if ficha and 'hemorragia_grave' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Infecção Urinária</span>
+            <span>Infecção urinária</span>
             <input type="hidden" name="condicoes_gestacionais" value="infeccao_urinaria" {% if ficha and 'infeccao_urinaria' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Infecção Grave</span>
+            <span>Infecção grave</span>
             <input type="hidden" name="condicoes_gestacionais" value="infeccao_grave" {% if ficha and 'infeccao_grave' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Ruptura Prematura de Membranas</span>
+            <span>Ruptura prematura de membranas</span>
             <input type="hidden" name="condicoes_gestacionais" value="ruptura_membranas" {% if ficha and 'ruptura_membranas' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
@@ -621,7 +948,7 @@
             <input type="hidden" name="condicoes_gestacionais" value="sindrome_hellp" {% if ficha and 'sindrome_hellp' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Parto Prematuro</span>
+            <span>Trabalho de parto prematuro</span>
             <input type="hidden" name="condicoes_gestacionais" value="parto_prematuro" {% if ficha and 'parto_prematuro' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
@@ -629,7 +956,7 @@
             <input type="hidden" name="condicoes_gestacionais" value="tromboembolismo" {% if ficha and 'tromboembolismo' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
           <div class="checkbox-item" onclick="toggleCheckbox(this)">
-            <span>Outras condições graves</span>
+            <span>Outras condições gestacionais graves</span>
             <input type="hidden" name="condicoes_gestacionais" value="outras_condicoes_gestacionais" {% if ficha and 'outras_condicoes_gestacionais' in ficha.condicoes_gestacionais %}class="selected"{% endif %}>
           </div>
         </div>
@@ -639,40 +966,96 @@
           <p>Classificação de Risco: <span id="risco">{{ ficha.classificacao_risco if ficha else 'Risco Habitual' }}</span></p>
         </div>
 
-        <button type="submit" class="button" id="submit-button" style="display: none;">Enviar</button>
+        <div class="btn-container">
+          <button type="submit" class="btn-entrar" id="submit-button" style="display: none;" aria-label="Enviar formulário">
+            <div class="btn-content">
+              <span class="icon"><i class="fas fa-paper-plane"></i></span>
+              <span>Enviar</span>
+            </div>
+            <div class="particles" id="particles-enviar"></div>
+          </button>
+        </div>
       </form>
     </div>
   </div>
 
+  <!-- Modal de Confirmação -->
   <div class="modal" id="confirm-modal">
     <div class="modal-content">
-      <p>Deseja prosseguir com a classificação de risco?</p>
-      <button onclick="enableSections()">Confirmar</button>
-      <button onclick="closeModal()">Cancelar</button>
+      <p>Tem certeza que deseja continuar para as próximas seções?</p>
+      <div class="modal-buttons">
+        <button class="confirm-btn" id="confirmBtn" onclick="enableSections()">Confirmar</button>
+        <button class="cancel-btn" id="cancelConfirmBtn" onclick="closeModal()">Cancelar</button>
+      </div>
     </div>
   </div>
 
+  <!-- Modal de LGPD -->
   <div class="modal" id="lgpd-modal">
     <div class="modal-content">
-      <p>Em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018), informamos que os dados fornecidos serão tratados exclusivamente para fins de acompanhamento gestacional, com garantia de confidencialidade e segurança. Deseja prosseguir com o envio?</p>
-      <button onclick="submitForm()">Confirmar</button>
-      <button onclick="closeLgpdModal()">Cancelar</button>
+      <p>Os dados informados serão tratados exclusivamente para fins assistenciais, em conformidade com a Lei nº 13.709/2018 (LGPD), garantindo-se sigilo, segurança e uso restrito por profissionais autorizados.</p>
+      <div class="modal-buttons">
+        <button class="confirm-btn" id="lgpdConfirmBtn" onclick="submitForm()">Concordo</button>
+        <button class="cancel-btn" id="cancelLgpdBtn" onclick="closeLgpdModal()">Não Concordo</button>
+      </div>
     </div>
   </div>
 
+  <!-- Modal de Erro -->
   <div class="modal" id="error-modal">
     <div class="modal-content">
       <p id="error-message"></p>
-      <button onclick="closeErrorModal()">Fechar</button>
+      <div class="modal-buttons">
+        <button class="confirm-btn" id="closeErrorBtn" onclick="closeErrorModal()">Fechar</button>
+      </div>
     </div>
   </div>
 
-  <!-- Inclui a biblioteca html2pdf.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
   <script>
     let codigoFichaGlobal = '';
-    let dadosGestante = {}; // Armazena os dados para o PDF
+    let dadosGestante = {};
+    let currentSection = 0;
+    const sections = ['dados-iniciais', 'section1', 'section2', 'section3', 'section4', 'section5', 'section6', 'section7', 'score-box'];
+
+    // Fechar tooltip ao clicar fora
+    document.addEventListener('click', function(event) {
+      const infoContainers = document.querySelectorAll('.info-container');
+      infoContainers.forEach(container => {
+        if (!container.contains(event.target)) {
+          const tooltip = container.querySelector('.info-tooltip');
+          if (tooltip) {
+            tooltip.style.display = 'none';
+            tooltip.style.opacity = '0';
+          }
+        }
+      });
+    });
+
+    // Evitar que o tooltip feche ao clicar nele
+    document.querySelectorAll('.info-tooltip').forEach(tooltip => {
+      tooltip.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    });
+
+    // Botão de fechar tooltip
+    document.querySelectorAll('.close-tooltip').forEach(button => {
+      button.addEventListener('click', function() {
+        this.closest('.info-tooltip').style.display = 'none';
+        this.closest('.info-tooltip').style.opacity = '0';
+      });
+    });
+
+    // Mostrar tooltip ao clicar no ícone
+    document.querySelectorAll('.info-icon').forEach(icon => {
+      icon.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const tooltip = this.closest('.info-container').querySelector('.info-tooltip');
+        tooltip.style.display = 'block';
+        tooltip.style.opacity = '1';
+      });
+    });
 
     // Valida os campos obrigatórios do formulário
     function validateForm() {
@@ -925,26 +1308,22 @@
     // Gera o PDF com nome da gestante e código
     function gerarDocumento() {
       try {
-        // Verifica se a biblioteca html2pdf está carregada
         if (!window.html2pdf) {
           throw new Error('Biblioteca html2pdf.js não foi carregada.');
         }
 
-        // Usa os dados armazenados
         const nomeGestante = dadosGestante.nome_gestante || 'Não informado';
         const codigo = dadosGestante.codigo_ficha || 'Não informado';
 
-        // Obtém a data atual para rodapé
         const hoje = new Date();
         const dataEmissao = `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
 
-        // Cria o template HTML dinamicamente
         const template = document.createElement('div');
         template.style.width = '210mm';
         template.style.minHeight = '297mm';
         template.style.padding = '20mm';
         template.style.backgroundColor = 'white';
-        template.style.fontFamily = 'Arial, sans-serif';
+        template.style.fontFamily = 'Poppins, sans-serif';
         template.style.boxSizing = 'border-box';
         template.style.display = 'flex';
         template.style.flexDirection = 'column';
@@ -952,17 +1331,17 @@
         template.style.justifyContent = 'flex-start';
         template.innerHTML = `
           <div style="text-align: center; margin-bottom: 30px; width: 100%;">
-            <div style="color: #194756; font-size: 28px; font-weight: bold; margin-bottom: 10px;">Dados da Gestante</div>
-            <div style="color: #54736e; font-size: 16px; font-style: italic;">Sistema Único de Saúde</div>
+            <div style="color: var(--primary); font-size: 28px; font-weight: bold; margin-bottom: 10px;">Dados da Gestante</div>
+            <div style="color: var(--secondary); font-size: 16px; font-style: italic;">Sistema Único de Saúde</div>
           </div>
-          <div style="border-top: 3px solid #194756; width: 100%; max-width: 500px; margin: 20px 0;"></div>
-          <div style="background-color: #e6f0e5; padding: 20px; border-radius: 8px; width: 100%; max-width: 500px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+          <div style="border-top: 3px solid var(--primary); width: 100%; max-width: 500px; margin: 20px 0;"></div>
+          <div style="background-color: #e6f0e5; padding: 20px; border-radius: 8px; width: 100%; max-width: 500px; box-shadow: var(--shadow);">
             <div style="display: flex; margin-bottom: 15px; font-size: 18px;">
-              <span style="font-weight: bold; width: 120px; color: #194756;">Nome:</span>
+              <span style="font-weight: bold; width: 120px; color: var(--primary);">Nome:</span>
               <span style="flex: 1; color: #0f2b36;">${nomeGestante}</span>
             </div>
             <div style="display: flex; font-size: 18px;">
-              <span style="font-weight: bold; width: 120px; color: #194756;">Código:</span>
+              <span style="font-weight: bold; width: 120px; color: var(--primary);">Código:</span>
               <span style="flex: 1; color: #0f2b36;">${codigo}</span>
             </div>
           </div>
@@ -971,10 +1350,8 @@
           </div>
         `;
 
-        // Adiciona o template ao DOM temporariamente
         document.body.appendChild(template);
 
-        // Configurações do html2pdf
         const opt = {
           margin: [10, 10, 10, 10],
           filename: `Dados_da_Gestante_${nomeGestante.replace(/[^a-zA-Z0-9]/g, '_') || 'Gestante'}_${dataEmissao.replace(/\//g, '-')}.pdf`,
@@ -983,7 +1360,6 @@
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        // Gera o PDF e remove o template
         html2pdf().from(template).set(opt).save().then(() => {
           document.body.removeChild(template);
         }).catch(err => {
@@ -1007,6 +1383,13 @@
     // Habilita as seções após confirmação
     function enableSections() {
       document.getElementById('confirm-modal').style.display = 'none';
+      currentSection++;
+      for (let i = 0; i <= currentSection; i++) {
+        const section = document.getElementById(sections[i]);
+        if (section) {
+          section.classList.remove('disabled-section');
+        }
+      }
       document.querySelectorAll('.section').forEach(section => {
         section.classList.remove('disabled-section');
       });
@@ -1032,15 +1415,100 @@
       }
     }
 
+    // Script para botões animados
+    const buttons = [
+      { id: 'historicoBtn', particlesId: 'particles-historico' },
+      { id: 'continuarBtn', particlesId: 'particles-continuar' },
+      { id: 'calcularImcBtn', particlesId: 'particles-imc' },
+      { id: 'submit-button', particlesId: 'particles-enviar' },
+      { id: 'confirmBtn', particlesId: 'particles-confirm' },
+      { id: 'cancelConfirmBtn', particlesId: 'particles-cancel-confirm' },
+      { id: 'lgpdConfirmBtn', particlesId: 'particles-lgpd-confirm' },
+      { id: 'cancelLgpdBtn', particlesId: 'particles-cancel-lgpd' },
+      { id: 'closeErrorBtn', particlesId: 'particles-error' }
+    ];
+
+    buttons.forEach(({ id, particlesId }) => {
+      const btn = document.getElementById(id);
+      const particlesContainer = document.getElementById(particlesId);
+
+      if (btn && particlesContainer) {
+        btn.addEventListener('mouseenter', () => {
+          createParticles(particlesContainer);
+        });
+
+        btn.addEventListener('click', (e) => {
+          const clickEffect = document.createElement('div');
+          clickEffect.style.position = 'absolute';
+          clickEffect.style.width = '20px';
+          clickEffect.style.height = '20px';
+          clickEffect.style.background = 'rgba(242, 234, 188, 0.7)';
+          clickEffect.style.borderRadius = '50%';
+          clickEffect.style.pointerEvents = 'none';
+          clickEffect.style.left = `${e.offsetX - 10}px`;
+          clickEffect.style.top = `${e.offsetY - 10}px`;
+          clickEffect.style.animation = 'clickEffect 0.5s ease-out forwards';
+
+          btn.appendChild(clickEffect);
+
+          setTimeout(() => {
+            clickEffect.remove();
+          }, 500);
+        });
+      }
+    });
+
+    function createParticles(particlesContainer) {
+      for (let i = 0; i < 5; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        particle.style.width = '5px';
+        particle.style.height = '5px';
+        particle.style.background = 'rgba(242, 234, 188, 0.5)';
+        particle.style.borderRadius = '50%';
+        particle.style.left = '50%';
+        particle.style.top = '50%';
+        particle.style.animation = 'float 1.5s ease-out forwards';
+
+        const angle = Math.random() * 360;
+        const distance = Math.random() * 20 + 10;
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+          @keyframes float {
+            0% {
+              transform: translate(0, 0) rotate(0deg);
+              opacity: 0;
+            }
+            10% {
+              opacity: 0.7;
+            }
+            100% {
+              transform: translate(
+                ${Math.cos(angle) * distance}px,
+                ${Math.sin(angle) * distance}px
+              ) rotate(${Math.random() * 360}deg);
+              opacity: 0;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+        particlesContainer.appendChild(particle);
+
+        setTimeout(() => {
+          particle.remove();
+          style.remove();
+        }, 1500);
+      }
+    }
+
     // Inicializa a página
     document.addEventListener('DOMContentLoaded', () => {
       try {
-        // Marca checkboxes selecionados
         document.querySelectorAll('.checkbox-item input.selected').forEach(input => {
           input.parentElement.classList.add('selected');
         });
 
-        // Inicializa período gestacional
         const periodoItems = document.querySelectorAll('.periodo-gestacional .checkbox-item');
         let hasSelected = false;
         periodoItems.forEach(item => {
@@ -1062,7 +1530,6 @@
           primeiroInput.name = 'periodo_gestacional';
         }
 
-        // Inicializa data de envio
         const dataEnvio = document.getElementById('data_envio');
         if (!dataEnvio.value) {
           const hoje = new Date();
@@ -1072,17 +1539,15 @@
           dataEnvio.value = `${dia}/${mes}/${ano}`;
         }
 
-        // Calcula pontuação inicial, se aplicável
         if (document.getElementById('pontuacao_total').value) {
           calcularPontuacao();
         }
 
-        // Adiciona manipulador de evento para interceptar o envio do formulário
         const form = document.getElementById('form-risco');
         form.addEventListener('submit', (event) => {
-          event.preventDefault(); // Impede o envio imediato
+          event.preventDefault();
           if (validateForm()) {
-            document.getElementById('lgpd-modal').style.display = 'flex'; // Exibe o modal LGPD
+            document.getElementById('lgpd-modal').style.display = 'flex';
           }
         });
 
