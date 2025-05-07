@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #007bff;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .flash-message {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2>Criar Conta</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('register') }}">
+        <input type="text" name="nome" placeholder="Nome completo" required>
+        <input type="text" name="cpf" placeholder="CPF" required>
+        <input type="text" name="profissao" placeholder="Profissão" required>
+        <input type="number" name="telefone" placeholder="Telefone" required>
+        <input type="email" name="email" placeholder="E-mail" required>
+        <input type="text" name="municipio" placeholder="Município" required>
+        <input type="number" name="cnes" placeholder="CNES" required>
+        <div class="password-container">
+            <input type="password" name="senha" id="senha" placeholder="Senha" required>
+            <span class="toggle-password" onclick="togglePassword('senha')">👁️</span>
+        </div>
+        <div class="password-container">
+            <input type="password" name="confirmar" id="confirmar" placeholder="Confirmar senha" required>
+            <span class="toggle-password" onclick="togglePassword('confirmar')">👁️</span>
+        </div>
+        <button type="submit">Cadastrar</button>
+    </form>
+    <p class="login-link">
+        Já possui cadastro?
+        <a href="{{ url_for('login') }}">Entrar</a>
+    </p>
+</div>
+
+<script>
+    function togglePassword(fieldId) {
+        const passwordField = document.getElementById(fieldId);
+        const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+        passwordField.setAttribute("type", type);
+    }
+</script>
+</body>
+</html>
