@@ -19,8 +19,8 @@ def criar_banco():
             cnes TEXT NOT NULL,
             profissao TEXT NOT NULL,
             senha TEXT NOT NULL,
-            status TEXT DEFAULT 'pendente',
-            is_admin BOOLEAN DEFAULT FALSE
+            approved INTEGER DEFAULT 0,
+            is_admin INTEGER DEFAULT 0
         )
         ''')
         print("Tabela 'usuarios' verificada/criada.")
@@ -35,25 +35,39 @@ def criar_banco():
             else:
                 print(f"Erro ao adicionar coluna 'profissao': {str(e)}")
 
-        # Migração: Adicionar a coluna status se ela não existir
+        # Migração: Adicionar a coluna approved se ela não existir
         try:
-            cursor.execute('ALTER TABLE usuarios ADD COLUMN status TEXT DEFAULT "pendente"')
-            print("Coluna 'status' adicionada à tabela 'usuarios'.")
+            cursor.execute('ALTER TABLE usuarios ADD COLUMN approved INTEGER DEFAULT 0')
+            print("Coluna 'approved' adicionada à tabela 'usuarios'.")
         except sqlite3.OperationalError as e:
             if "duplicate column name" in str(e):
-                print("Coluna 'status' já existe na tabela 'usuarios'.")
+                print("Coluna 'approved' já existe na tabela 'usuarios'.")
             else:
-                print(f"Erro ao adicionar coluna 'status': {str(e)}")
+                print(f"Erro ao adicionar coluna 'approved': {str(e)}")
 
         # Migração: Adicionar a coluna is_admin se ela não existir
         try:
-            cursor.execute('ALTER TABLE usuarios ADD COLUMN is_admin BOOLEAN DEFAULT FALSE')
+            cursor.execute('ALTER TABLE usuarios ADD COLUMN is_admin INTEGER DEFAULT 0')
             print("Coluna 'is_admin' adicionada à tabela 'usuarios'.")
         except sqlite3.OperationalError as e:
             if "duplicate column name" in str(e):
                 print("Coluna 'is_admin' já existe na tabela 'usuarios'.")
             else:
                 print(f"Erro ao adicionar coluna 'is_admin': {str(e)}")
+
+        # Migração: Renomear a coluna status para approved, se status existir
+        try:
+            cursor.execute("PRAGMA table_info(usuarios)")
+            columns = [col[1] for col in cursor.fetchall()]
+            if 'status' in columns and 'approved' not in columns:
+                cursor.execute('ALTER TABLE usuarios RENAME COLUMN status TO approved')
+                print("Coluna 'status' renomeada para 'approved'.")
+                # Converter valores de status para approved (pendente -> 0, aprovado -> 1)
+                cursor.execute('UPDATE usuarios SET approved = 1 WHERE approved = "aprovado"')
+                cursor.execute('UPDATE usuarios SET approved = 0 WHERE approved = "pendente"')
+                print("Valores de 'status' convertidos para 'approved' (0 ou 1).")
+        except sqlite3.OperationalError as e:
+            print(f"Erro ao renomear coluna 'status': {str(e)}")
 
         # Criando a tabela de cálculos
         cursor.execute('''
@@ -105,7 +119,7 @@ def criar_banco():
 
         # Verificar registros inválidos em calculos
         cursor.execute('SELECT COUNT(*) FROM calculos WHERE municipio IS NULL OR nome_gestante IS NULL')
-        invalid_records = cursor.fetchone()[0]
+        invalid_records = cursor.fetchone()[0]  # Corrigido
         if invalid_records > 0:
             print(f"Aviso: Encontrados {invalid_records} registros em 'calculos' com municipio ou nome_gestante NULL.")
 
