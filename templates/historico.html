@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            background: linear-gradient(135deg, #f2eabc 0%, #ffffff 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23194756" fill-opacity="0.1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,245.3C960,224,1056,160,1152,149.3C1248,139,1344,181,1392,202.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path><path fill="%2354736e" fill-opacity="0.1" d="M0,256L48,245.3C96,235,192,213,288,213.3C384,213,480,235,576,256C672,277,768,299,864,277.3C960,256,1056,192,1152,181.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            z-index: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 95%;
+            margin: 20px auto;
+            z-index: 1;
+            overflow-y: auto;
+        }
+
+        .container:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #194756;
+        }
+
+        .button {
+            background-color: #194756;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin: 5px;
+            transition: background-color 0.3s ease, opacity 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #54736e;
+        }
+
+        .button:disabled {
+            background-color: #a3b1af;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .logout-button {
+            background-color: #d4a5a5;
+        }
+
+        .logout-button:hover {
+            background-color: #b58383;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination-button {
+            background-color: #194756;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination-button:hover {
+            background-color: #54736e;
+        }
+
+        .pagination-button:disabled {
+            background-color: #a3b1af;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.9rem;
+            background-color: #f2eabc;
+            color: #194756;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #194756;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background-color: #54736e;
+        }
+
+        .sort-icon {
+            margin-left: 5px;
+        }
+
+        td {
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2eabc;
+        }
+
+        tr:hover {
+            background-color: #e6f0e5;
+            transition: background-color 0.2s ease;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #54736e;
+            font-style: italic;
+            font-size: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content p {
+            margin: 0 0 20px;
+            color: #194756;
+            font-size: 0.95rem;
+        }
+
+        .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-buttons .confirm-btn {
+            background-color: #194756;
+            color: white;
+        }
+
+        .modal-buttons .confirm-btn:hover {
+            background-color: #54736e;
+        }
+
+        .modal-buttons .cancel-btn {
+            background-color: #d4a5a5;
+            color: white;
+        }
+
+        .modal-buttons .cancel-btn:hover {
+            background-color: #b58383;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 10px auto;
+                max-width: 98%;
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .container:hover {
+                box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            th, td {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+
+            .button {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                width: 90%;
+            }
+
+            .button-container {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Histórico</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="button-container">
+            <button class="button" onclick="voltarCalculadora()">Voltar para Calculadora</button>
+            <button id="logout-btn" class="button logout-button" onclick="logout()">Sair</button>
+        </div>
+
+        <div id="resultado">
+            <!-- A tabela será preenchida via JavaScript -->
+        </div>
+
+        <div class="pagination-container" id="pagination">
+            <!-- Botões de paginação -->
+        </div>
+    </div>
+
+    <!-- Modal de Desfecho -->
+    <div class="modal" id="desfecho-modal">
+        <div class="modal-content">
+            <p>Selecione o desfecho da gestação:</p>
+            <select id="desfecho-select" name="desfecho" required>
+                <option value="" disabled selected>Selecione o desfecho</option>
+                <option value="A96">A96 - Morte</option>
+                <option value="W82">W82 - Aborto espontâneo</option>
+                <option value="W83">W83 - Aborto provocado</option>
+                <option value="W90">W90 - Parto sem complicações de nascido vivo</option>
+                <option value="W91">W91 - Parto sem complicações de natimorto</option>
+                <option value="W92">W92 - Parto com complicações de nascido vivo</option>
+                <option value="W93">W93 - Parto com complicações de natimorto</option>
+            </select>
+            <div class="modal-buttons">
+                <button class="confirm-btn" onclick="confirmarDesfecho()">Enviar</button>
+                <button class="cancel-btn" onclick="fecharModal('desfecho-modal')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Desfecho -->
+    <div class="modal" id="confirmacao-desfecho-modal">
+        <div class="modal-content">
+            <p>Você confirma a escolha do desfecho <span id="desfecho-selecionado"></span>? Esta ação removerá a ficha do histórico.</p>
+            <div class="modal-buttons">
+                <button class="confirm-btn" onclick="enviarDesfecho()">Confirmar</button>
+                <button class="cancel-btn" onclick="fecharModal('confirmacao-desfecho-modal')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let codigoFichaSelecionado = '';
+    let currentPage = 1;
+    const rowsPerPage = 100;
+    let sortColumn = 'data_envio';
+    let sortDirection = 'DESC';
+
+    // Função para obter o token CSRF do cookie
+    function getCsrfToken() {
+        const name = 'csrf_token=';
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const cookies = decodedCookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+        return '';
+    }
+
+    // Carregar histórico automaticamente ao carregar a página
+    document.addEventListener('DOMContentLoaded', function () {
+        carregarHistorico();
+    });
+
+    function carregarHistorico(page = 1, column = sortColumn, direction = sortDirection) {
+        console.log(`Carregando histórico: página ${page}, ordenação por ${column} ${direction}`);
+        const resultado = document.getElementById('resultado');
+        currentPage = page;
+        sortColumn = column;
+        sortDirection = direction;
+
+        fetch('/buscar_historico', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': getCsrfToken()
+            },
+            body: JSON.stringify({
+                page: currentPage,
+                per_page: rowsPerPage,
+                sort_column: sortColumn,
+                sort_direction: sortDirection
+            }),
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            console.log("Resposta do servidor:", response.status, response.statusText);
+            if (response.status === 401) {
+                resultado.innerHTML = `
+                    <div class="flash-message">Usuário não está autenticado. Redirecionando para login...</div>
+                `;
+                setTimeout(() => { window.location.href = '/login'; }, 2000);
+                return Promise.reject(new Error('Não autenticado'));
+            }
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || `Erro ${response.status}: ${response.statusText}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Dados recebidos:", data);
+            if (!data.success) {
+                resultado.innerHTML = `<div class="flash-message">${data.message}</div>`;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            const fichas = data.fichas || [];
+            const totalRecords = data.total_records || 0;
+            const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+            if (fichas.length === 0) {
+                resultado.innerHTML = '<p class="no-results">Nenhum registro encontrado para o profissional logado.</p>';
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('data_envio')" data-column="data_envio">
+                                    Data de Envio ${getSortIcon('data_envio')}
+                                </th>
+                                <th onclick="sortTable('nome_gestante')" data-column="nome_gestante">
+                                    Nome da Gestante ${getSortIcon('nome_gestante')}
+                                </th>
+                                <th onclick="sortTable('codigo_ficha')" data-column="codigo_ficha">
+                                    Código da Ficha ${getSortIcon('codigo_ficha')}
+                                </th>
+                                <th onclick="sortTable('periodo_gestacional')" data-column="periodo_gestacional">
+                                    Período Gestacional ${getSortIcon('periodo_gestacional')}
+                                </th>
+                                <th onclick="sortTable('pontuacao_total')" data-column="pontuacao_total">
+                                    Pontuação Total ${getSortIcon('pontuacao_total')}
+                                </th>
+                                <th onclick="sortTable('classificacao_risco')" data-column="classificacao_risco">
+                                    Classificação de Risco ${getSortIcon('classificacao_risco')}
+                                </th>
+                                <th onclick="sortTable('municipio')" data-column="municipio">
+                                    Município ${getSortIcon('municipio')}
+                                </th>
+                                <th onclick="sortTable('ubs')" data-column="ubs">
+                                    UBS ${getSortIcon('ubs')}
+                                </th>
+                                <th onclick="sortTable('acs')" data-column="acs">
+                                    ACS ${getSortIcon('acs')}
+                                </th>
+                                <th onclick="sortTable('profissional')" data-column="profissional">
+                                    Profissional ${getSortIcon('profissional')}
+                                </th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            fichas.forEach(ficha => {
+                const escapeHTML = str => str ? String(str).replace(/[&<>"']/g, match => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                })[match]) : 'N/A';
+
+                html += `
+                    <tr>
+                        <td>${escapeHTML(ficha.data_envio)}</td>
+                        <td>${escapeHTML(ficha.nome_gestante)}</td>
+                        <td>${escapeHTML(ficha.codigo_ficha)}</td>
+                        <td>${escapeHTML(ficha.periodo_gestacional)}</td>
+                        <td>${ficha.pontuacao_total || '0'}</td>
+                        <td>${escapeHTML(ficha.classificacao_risco)}</td>
+                        <td>${escapeHTML(ficha.municipio)}</td>
+                        <td>${escapeHTML(ficha.ubs)}</td>
+                        <td>${escapeHTML(ficha.acs)}</td>
+                        <td>${escapeHTML(ficha.profissional)}</td>
+                        <td>
+                            <button class="button" onclick="gerarPDF('${escapeHTML(ficha.codigo_ficha)}', this)">Baixar PDF</button>
+                            <button class="button" onclick="abrirModal('desfecho-modal', '${escapeHTML(ficha.codigo_ficha)}')">Desfecho</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            resultado.innerHTML = html;
+
+            // Adicionar botões de paginação
+            let paginationHtml = '';
+            if (totalPages > 1) {
+                paginationHtml = `
+                    <button class="pagination-button" onclick="carregarHistorico(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Anterior</button>
+                    <span>Página ${currentPage} de ${totalPages}</span>
+                    <button class="pagination-button" onclick="carregarHistorico(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Próxima</button>
+                `;
+            }
+            document.getElementById('pagination').innerHTML = paginationHtml;
+        })
+        .catch(error => {
+            if (error.message !== 'Não autenticado') {
+                console.error('Erro ao carregar histórico:', error);
+                resultado.innerHTML = `
+                    <div class="flash-message">Erro ao carregar o histórico: ${error.message}. Tente novamente.</div>
+                `;
+                document.getElementById('pagination').innerHTML = '';
+            }
+        });
+    }
+
+    function sortTable(column) {
+        if (sortColumn === column) {
+            sortDirection = sortDirection === 'ASC' ? 'DESC' : 'ASC';
+        } else {
+            sortColumn = column;
+            sortDirection = 'ASC';
+        }
+        carregarHistorico(1);
+    }
+
+    function getSortIcon(column) {
+        if (sortColumn !== column) return '';
+        return sortDirection === 'ASC' ? '<i class="fas fa-sort-up sort-icon"></i>' : '<i class="fas fa-sort-down sort-icon"></i>';
+    }
+
+    function voltarCalculadora() {
+        window.location.href = '/calculadora';
+    }
+
+    function logout() {
+        const logoutBtn = document.getElementById('logout-btn');
+        logoutBtn.disabled = true;
+        logoutBtn.textContent = 'Saindo...';
+
+        fetch('/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': getCsrfToken()
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(response.statusText);
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/';
+            } else {
+                throw new Error(data.message || 'Erro ao fazer logout.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao fazer logout:', error);
+            logoutBtn.disabled = false;
+            logoutBtn.textContent = 'Sair';
+            document.getElementById('resultado').innerHTML = `
+                <div class="flash-message">Erro ao fazer logout: ${error.message}</div>
+            `;
+        });
+    }
+
+    function gerarPDF(codigoFicha, button) {
+        // Desativar o botão para evitar cliques repetidos
+        button.disabled = true;
+        button.textContent = 'Baixando...';
+
+        fetch(`/gerar_pdf/${encodeURIComponent(codigoFicha)}`, {
+            method: 'GET',
+            headers: {
+                'X-CSRF-Token': getCsrfToken()
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            // Reativar o botão
+            button.disabled = false;
+            button.textContent = 'Baixar PDF';
+
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || `Erro ${response.status}: ${response.statusText}`);
+                });
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ficha_${codigoFicha}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Erro ao baixar PDF:', error);
+            document.getElementById('resultado').innerHTML = `
+                <div class="flash-message">Erro ao baixar PDF: ${error.message}</div>
+            `;
+            if (error.message.includes('Não autenticado')) {
+                setTimeout(() => { window.location.href = '/login'; }, 2000);
+            }
+        });
+    }
+
+    function abrirModal(modalId, codigoFicha) {
+        codigoFichaSelecionado = codigoFicha;
+        if (modalId === 'desfecho-modal') {
+            document.getElementById('desfecho-select').value = '';
+        }
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function confirmarDesfecho() {
+        const desfecho = document.getElementById('desfecho-select').value;
+        if (!desfecho) {
+            document.getElementById('resultado').innerHTML = `
+                <div class="flash-message">Por favor, selecione um desfecho.</div>
+            `;
+            return;
+        }
+
+        const desfechoText = document.querySelector(`#desfecho-select option[value="${desfecho}"]`).textContent;
+        document.getElementById('desfecho-selecionado').textContent = desfechoText;
+        fecharModal('desfecho-modal');
+        document.getElementById('confirmacao-desfecho-modal').style.display = 'flex';
+    }
+
+    function enviarDesfecho() {
+        const desfecho = document.getElementById('desfecho-select').value;
+        fetch('/registrar_desfecho', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': getCsrfToken()
+            },
+            body: JSON.stringify({ codigo_ficha: codigoFichaSelecionado, desfecho: desfecho }),
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || `Erro ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                fecharModal('confirmacao-desfecho-modal');
+                document.getElementById('resultado').innerHTML = `
+                    <div class="flash-message">Desfecho registrado com sucesso!</div>
+                `;
+                setTimeout(() => carregarHistorico(currentPage), 2000);
+            } else {
+                throw new Error(data.message || 'Erro ao registrar desfecho.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao registrar desfecho:', error);
+            fecharModal('confirmacao-desfecho-modal');
+            document.getElementById('resultado').innerHTML = `
+                <div class="flash-message">Erro ao registrar desfecho: ${error.message}</div>
+            `;
+        });
+    }
+
+    function fecharModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    </script>
+</body>
+</html>

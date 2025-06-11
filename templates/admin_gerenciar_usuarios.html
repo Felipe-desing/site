@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Usuários</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #194756;
+            --secondary-color: #54736e;
+            --accent-color: #f2eabc;
+            --danger-color: #d32f2f;
+            --danger-hover: #b71c1c;
+            --success-color: #388e3c;
+            --success-hover: #2e7d32;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--accent-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            background: var(--text-light);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: var(--box-shadow);
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #dddddd;
+        }
+        
+        th {
+            background: var(--secondary-color);
+            color: var(--accent-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        th.sortable::after {
+            content: '\f0dc';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-left: 5px;
+            font-size: 0.8rem;
+            color: var(--accent-color);
+        }
+        
+        th.sort-asc::after {
+            content: '\f0de';
+        }
+        
+        th.sort-desc::after {
+            content: '\f0dd';
+        }
+        
+        th.filter-active {
+            background: var(--primary-color);
+        }
+        
+        tr:hover {
+            background-color: rgba(242, 234, 188, 0.2);
+        }
+        
+        .button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-right: 8px;
+        }
+        
+        .button--primary {
+            background: var(--primary-color);
+            color: var(--accent-color);
+        }
+        
+        .button--primary:hover {
+            background: #123540;
+            transform: translateY(-1px);
+        }
+        
+        .button--nav {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: var(--accent-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .button--nav:hover {
+            background: #123540;
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .button--nav:active {
+            transform: translateY(0);
+        }
+        
+        .button--nav.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .flash-message {
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            font-weight: 600;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+        
+        .flash-message.success {
+            background-color: #e6f0e5;
+            color: var(--primary-color);
+        }
+        
+        .flash-message.danger {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+        
+        .form-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .select-sm {
+            padding: 5px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #dddddd;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .pagination .button--nav {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .pagination .button--nav.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .pagination span {
+            font-size: 16px;
+            color: var(--secondary-color);
+        }
+        
+        .icon {
+            margin-right: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .pagination {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h2>Gerenciar Usuários</h2>
+            <p>Lista de usuários ativos. Apenas administradores estaduais podem promover usuários.</p>
+            <a href="{{ url_for('admin_painel') }}" class="button--nav">
+                <i class="fas fa-arrow-left icon"></i> Voltar para o Painel
+            </a>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <main>
+            <table id="usuarios-ativos-table" aria-label="Usuários ativos">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-sort="nome" data-filter="nome">Nome</th>
+                        <th class="sortable" data-sort="email" data-filter="email">E-mail</th>
+                        <th class="sortable" data-sort="municipio" data-filter="municipio">Município</th>
+                        <th class="sortable" data-sort="profissao" data-filter="profissao">Profissão</th>
+                        <th class="sortable" data-sort="cnes" data-filter="cnes">CNES</th>
+                        <th class="sortable" data-sort="role" data-filter="role">Papel Atual</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios.items %}
+                    <tr>
+                        <td>{{ usuario.nome }}</td>
+                        <td>{{ usuario.email }}</td>
+                        <td>{{ usuario.municipio }}</td>
+                        <td>{{ usuario.profissao }}</td>
+                        <td>{{ usuario.cnes }}</td>
+                        <td>
+                            {% if usuario.is_super_admin %}
+                                Administrador Estadual
+                            {% elif usuario.is_admin %}
+                                Administrador Municipal
+                            {% else %}
+                                Usuário Comum
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form class="form-inline" action="{{ url_for('admin_gerenciar_usuarios', page=usuarios.page) }}" method="POST">
+                                <input type="hidden" name="usuario_id" value="{{ usuario.id }}">
+                                <select name="novo_role" class="select-sm">
+                                    <option value="comum" {% if usuario.role == 'comum' %}selected{% endif %}>Comum</option>
+                                    <option value="municipal" {% if usuario.role == 'municipal' %}selected{% endif %}>Municipal</option>
+                                    <option value="estadual" {% if usuario.role == 'estadual' %}selected{% endif %}>Estadual</option>
+                                </select>
+                                <button type="submit" class="button button--primary">Promover</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">Nenhum usuário ativo encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Paginação -->
+            <div class="pagination">
+                {% if usuarios.has_prev %}
+                <a href="{{ url_for('admin_gerenciar_usuarios', page=usuarios.prev_num) }}" class="button--nav">
+                    <i class="fas fa-chevron-left icon"></i> Anterior
+                </a>
+                {% else %}
+                <a class="button--nav disabled">
+                    <i class="fas fa-chevron-left icon"></i> Anterior
+                </a>
+                {% endif %}
+                <span>Página {{ usuarios.page }} de {{ usuarios.pages }}</span>
+                {% if usuarios.has_next %}
+                <a href="{{ url_for('admin_gerenciar_usuarios', page=usuarios.next_num) }}" class="button--nav">
+                    Próximo <i class="fas fa-chevron-right icon"></i>
+                </a>
+                {% else %}
+                <a class="button--nav disabled">
+                    Próximo <i class="fas fa-chevron-right icon"></i>
+                </a>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Paginação e Filtros para Usuários Ativos
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('usuarios-ativos-table');
+            if (!table) return; // Sai se a tabela não existir
+
+            const tbody = table.querySelector('tbody');
+            const headers = table.querySelectorAll('th.sortable');
+            let sortDirection = {};
+            let currentSort = null;
+            let currentFilter = null;
+            let filterValue = null;
+            const rowsPerPage = 100;
+            let currentPage = 1;
+            let rows = Array.from(tbody.querySelectorAll('tr'));
+            let filteredRows = rows;
+
+            function updateTable() {
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                filteredRows.forEach((row, index) => {
+                    row.style.display = (index >= start && index < end) ? '' : 'none';
+                });
+
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage) || 1;
+                currentPage = Math.min(currentPage, totalPages);
+            }
+
+            // Inicializar tabela
+            updateTable();
+
+            // Função para aplicar filtro
+            function applyFilter(key, value) {
+                filteredRows = rows.filter(row => {
+                    const cell = row.querySelector(`td:nth-child(${Array.from(headers).findIndex(h => h.getAttribute('data-filter') === key) + 1})`);
+                    return cell.textContent.trim().toLowerCase() === value.toLowerCase();
+                });
+                currentPage = 1;
+                updateTable();
+            }
+
+            // Função para limpar filtros
+            function clearFilters() {
+                filteredRows = rows;
+                currentFilter = null;
+                filterValue = null;
+                headers.forEach(h => h.classList.remove('filter-active'));
+                currentPage = 1;
+                updateTable();
+            }
+
+            // Função para ordenar a tabela
+            function sortTable(key, ascending) {
+                filteredRows.sort((a, b) => {
+                    let aValue = a.querySelector(`td:nth-child(${Array.from(headers).findIndex(h => h.getAttribute('data-sort') === key) + 1})`).ATURA
+
+                    if (key === 'role') {
+                        const roleMap = {
+                            'Administrador Estadual': 2,
+                            'Administrador Municipal': 1,
+                            'Usuário Comum': 0
+                        };
+                        aValue = roleMap[aValue] || 0;
+                        bValue = roleMap[bValue] || 0;
+                    }
+
+                    if (!isNaN(aValue) && !isNaN(bValue)) {
+                        aValue = parseFloat(aValue);
+                        bValue = parseFloat(bValue);
+                    }
+
+                    if (aValue < bValue) return ascending ? -1 : 1;
+                    if (aValue > bValue) return ascending ? 1 : -1;
+                    return 0;
+                });
+
+                while (tbody.firstChild) {
+                    tbody.removeChild(tbody.firstChild);
+                }
+                filteredRows.forEach(row => tbody.appendChild(row));
+                currentPage = 1;
+                updateTable();
+            }
+
+            // Adicionar eventos de clique nas colunas
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const sortKey = header.getAttribute('data-sort');
+                    const filterKey = header.getAttribute('data-filter');
+
+                    if (event.ctrlKey && filterKey) {
+                        // Filtro ao clicar com Ctrl
+                        const firstRow = filteredRows[0];
+                        if (firstRow) {
+                            const value = firstRow.querySelector(`td:nth-child(${Array.from(headers).findIndex(h => h.getAttribute('data-filter') === filterKey) + 1})`).textContent.trim();
+                            if (currentFilter === filterKey && filterValue === value) {
+                                clearFilters();
+                            } else {
+                                headers.forEach(h => h.classList.remove('filter-active'));
+                                header.classList.add('filter-active');
+                                currentFilter = filterKey;
+                                filterValue = value;
+                                applyFilter(filterKey, value);
+                            }
+                        }
+                    } else {
+                        // Ordenação normal
+                        if (currentSort === sortKey) {
+                            sortDirection[sortKey] = !sortDirection[sortKey];
+                        } else {
+                            sortDirection = {};
+                            sortDirection[sortKey] = true;
+                            headers.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+                        }
+                        currentSort = sortKey;
+                        header.classList.add(sortDirection[sortKey] ? 'sort-asc' : 'sort-desc');
+                        sortTable(sortKey, sortDirection[sortKey]);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

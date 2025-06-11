@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório Administrativo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #194756;
+      --secondary: #54736e;
+      --accent: #f2eabc;
+      --light: #f8f9fa;
+      --white: #ffffff;
+      --text: #333333;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+      --danger-color: #d32f2f;
+      --danger-hover: #b71c1c;
+      --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-background: #f8d7da;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--accent);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container {
+      background-color: var(--white);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 1200px;
+      margin: 40px 20px;
+      animation: fadeIn 0.5s ease-out;
+    }
+    h2 {
+      color: var(--secondary);
+      margin-bottom: 30px;
+      font-weight: 600;
+      text-align: center;
+    }
+    h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+    .flash-message {
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+    .flash-message.success {
+      background-color: #e6f0e5;
+      color: var(--primary);
+    }
+    .flash-message.danger {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .flash-message.warning {
+      background-color: #f2eabc;
+      color: var(--primary);
+    }
+    .flash-message.info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid var(--secondary);
+      box-sizing: border-box;
+      font-size: 0.95rem;
+      background-color: #f8f9fa;
+      transition: var(--transition);
+    }
+    select:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(84, 115, 110, 0.2);
+      background-color: var(--white);
+    }
+    .btn-container {
+      position: relative;
+      width: 100%;
+      max-width: 200px;
+      height: 50px;
+      perspective: 1000px;
+      margin: 20px auto;
+    }
+    .btn-entrar {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: var(--accent);
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      box-shadow: var(--shadow);
+      transform-style: preserve-3d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-entrar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--secondary), var(--primary));
+      clip-path: circle(0% at 50% 50%);
+      transition: clip-path 0.7s ease-in-out;
+      z-index: -1;
+    }
+    .btn-entrar:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(25, 71, 86, 0.4);
+    }
+    .btn-entrar:hover::before {
+      clip-path: circle(100% at 50% 50%);
+    }
+    .btn-entrar:active {
+      transform: translateY(0) scale(0.98);
+    }
+    .btn-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s ease;
+    }
+    .btn-entrar:hover .btn-content {
+      animation: pulse 1s infinite alternate;
+    }
+    .icon {
+      transition: transform 0.3s ease;
+    }
+    .btn-entrar:hover .icon {
+      transform: rotate(360deg);
+    }
+    .btn-entrar::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0) 60%
+      );
+      transform: rotate(30deg);
+      transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+      z-index: 2;
+    }
+    .btn-entrar:hover::after {
+      left: 100%;
+      top: 100%;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--white);
+    }
+    th, td {
+      border: 1px solid var(--secondary);
+      padding: 12px;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    th {
+      background-color: #e6f0e5;
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+    }
+    th:hover {
+      background-color: #d4e6d4;
+    }
+    th.sortable::after {
+      content: '\f0dc';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      margin-left: 5px;
+      font-size: 0.8rem;
+      color: var(--primary);
+    }
+    th.sort-asc::after {
+      content: '\f0de';
+    }
+    th.sort-desc::after {
+      content: '\f0dd';
+    }
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    tr:hover {
+      background-color: #e6f0e5;
+    }
+    td.risco-habitual {
+      color: #856404;
+      background-color: #fff3cd;
+      font-weight: 500;
+    }
+    td.risco-intermediario {
+      color: #d94801;
+      background-color: #ffd8a8;
+      font-weight: 500;
+    }
+    td.risco-alto {
+      color: #721c24;
+      background-color: #f8d7da;
+      font-weight: 500;
+    }
+    .button-group {
+      display: flex;
+      justify-content: flex-start;
+      gap: 15px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+    .button--nav {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background: var(--primary);
+      color: var(--accent);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+    .button--nav:hover {
+      background: #123540;
+      transform: translateY(-2px);
+      box-shadow: var(--box-shadow);
+    }
+    .button--nav:active {
+      transform: translateY(0);
+    }
+    .button--nav .icon {
+      margin-right: 5px;
+    }
+    .button--logout {
+      background: var(--danger-color);
+    }
+    .button--logout:hover {
+      background: var(--danger-hover);
+    }
+    .relatorio-quantitativo {
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: #e6f0e5;
+      border-radius: 8px;
+    }
+    .relatorio-quantitativo ul {
+      list-style: none;
+      padding: 0;
+    }
+    .relatorio-quantitativo li {
+      margin-bottom: 8px;
+    }
+    .relatorio-quantitativo .sub-list {
+      margin-top: 10px;
+      margin-left: 20px;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .pagination button {
+      padding: 8px 15px;
+      font-size: 0.95rem;
+    }
+    .pagination button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    #page-info {
+      font-size: 0.95rem;
+      color: var(--primary);
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 576px) {
+      .container {
+        margin: 20px 15px;
+        padding: 20px;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h3 {
+        font-size: 1.2rem;
+      }
+      .btn-container {
+        max-width: 150px;
+        height: 40px;
+      }
+      .btn-entrar {
+        font-size: 1rem;
+      }
+      th, td {
+        padding: 8px;
+        font-size: 0.9rem;
+      }
+      .button-group {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .relatorio-quantitativo {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Relatório Administrativo</h2>
+    <div class="relatorio-quantitativo">
+      <h3>Resumo Quantitativo</h3>
+      <ul>
+        <li><strong>Total de Registros:</strong> {{ estatisticas.total_registros }}</li>
+        <li><strong>Municípios Distintos:</strong> {{ estatisticas.municipios_unicos }}</li>
+        <li>
+          <strong>Período Gestacional:</strong>
+          <ul class="sub-list">
+            {% for periodo, count in estatisticas.periodo_gestacional.items() %}
+              <li>{{ periodo }}: {{ count }} ({{ '{:.1f}'.format(count / estatisticas.total_registros * 100 if estatisticas.total_registros > 0 else 0) }}%)</li>
+            {% endfor %}
+          </ul>
+        </li>
+        <li><strong>Média da Pontuação Total:</strong> {{ estatisticas.media_pontuacao }}</li>
+        <li>
+          <strong>Classificação de Risco:</strong>
+          <ul class="sub-list">
+            <li>Risco Habitual: {{ estatisticas.classificacao_risco.risco_habitual }} ({{ '{:.1f}'.format(estatisticas.classificacao_risco.risco_habitual / estatisticas.total_registros * 100 if estatisticas.total_registros > 0 else 0) }}%)</li>
+            <li>Risco Intermediário: {{ estatisticas.classificacao_risco.risco_intermediario }} ({{ '{:.1f}'.format(estatisticas.classificacao_risco.risco_intermediario / estatisticas.total_registros * 100 if estatisticas.total_registros > 0 else 0) }}%)</li>
+            <li>Risco Alto: {{ estatisticas.classificacao_risco.risco_alto }} ({{ '{:.1f}'.format(estatisticas.classificacao_risco.risco_alto / estatisticas.total_registros * 100 if estatisticas.total_registros > 0 else 0) }}%)</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Características:</strong>
+          <ul class="sub-list">
+            {% for item, count in estatisticas.caracteristicas_counts.items() %}
+              {% if item != '-' %}
+                <li>{{ item }}: {{ count }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+        <li>
+          <strong>Avaliação Nutricional:</strong>
+          <ul class="sub-list">
+            {% for item, count in estatisticas.avaliacao_nutricional_counts.items() %}
+              {% if item != '-' %}
+                <li>{{ item }}: {{ count }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+        <li>
+          <strong>Comorbidades:</strong>
+          <ul class="sub-list">
+            {% for item, count in estatisticas.comorbidades_counts.items() %}
+              {% if item != '-' %}
+                <li>{{ item }}: {{ count }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+        <li>
+          <strong>História Obstétrica:</strong>
+          <ul class="sub-list">
+            {% for item, count in estatisticas.historia_obstetrica_counts.items() %}
+              {% if item != '-' %}
+                <li>{{ item }}: {{ count }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+        <li>
+          <strong>Condições Gestacionais:</strong>
+          <ul class="sub-list">
+            {% for item, count in estatisticas.condicoes_gestacionais_counts.items() %}
+              {% if item != '-' %}
+                <li>{{ item }}: {{ count }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+        <li>
+          <strong>Desfechos:</strong>
+          <ul class="sub-list">
+            {% for desfecho, count in estatisticas.desfecho_counts.items() %}
+              <li>{{ desfecho }}: {{ count }} ({{ '{:.1f}'.format(count / estatisticas.total_registros * 100 if estatisticas.total_registros > 0 else 0) }}%)</li>
+            {% endfor %}
+          </ul>
+        </li>
+      </ul>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('admin_relatorio') }}" class="form-group">
+      <select name="municipio">
+        <option value="">Todos os Municípios</option>
+        {% for municipio in municipios %}
+          <option value="{{ municipio }}" {% if municipio == filtro_municipio %}selected{% endif %}>
+            {{ municipio }}
+          </option>
+        {% endfor %}
+      </select>
+      <div class="btn-container">
+        <button type="submit" class="btn-entrar" aria-label="Filtrar registros">
+          <div class="btn-content">
+            <span class="icon"><i class="fas fa-filter"></i></span>
+            <span>Filtrar</span>
+          </div>
+        </button>
+      </div>
+    </form>
+    <div class="button-group">
+      <a href="{{ url_for('calculadora') }}" class="button--nav" aria-label="Voltar para Calculadora">
+        <i class="fas fa-calculator icon"></i> Voltar para a Calculadora
+      </a>
+      <a href="{{ url_for('admin_painel') }}" class="button--nav" aria-label="Voltar para o Painel">
+        <i class="fas fa-tachometer-alt icon"></i> Voltar para o Painel
+      </a>
+      <button id="logout-btn" class="button--nav button--logout" onclick="logout()" aria-label="Sair">
+        <i class="fas fa-sign-out-alt icon"></i> Sair
+      </button>
+      <button id="export-csv" class="button--nav" aria-label="Exportar para CSV">
+        <i class="fas fa-download icon"></i> Exportar para CSV
+      </button>
+    </div>
+    <div class="table-container">
+      <table id="relatorio-table">
+        <thead>
+          <tr>
+            <th class="sortable" data-sort="user_id">ID Usuário</th>
+            <th class="sortable" data-sort="codigo_ficha">Código Ficha</th>
+            <th class="sortable" data-sort="nome_gestante">Nome Gestante</th>
+            <th class="sortable" data-sort="data_nasc">Data Nascimento</th>
+            <th class="sortable" data-sort="telefone">Telefone</th>
+            <th class="sortable" data-sort="municipio">Município</th>
+            <th class="sortable" data-sort="ubs">UBS</th>
+            <th class="sortable" data-sort="acs">ACS</th>
+            <th class="sortable" data-sort="periodo_gestacional">Período Gestacional</th>
+            <th class="sortable" data-sort="data_envio">Data Envio</th>
+            <th class="sortable" data-sort="pontuacao_total">Pontuação Total</th>
+            <th class="sortable" data-sort="classificacao_risco">Classificação de Risco</th>
+            <th class="sortable" data-sort="imc">IMC</th>
+            <th>Características</th>
+            <th>Avaliação Nutricional</th>
+            <th>Comorbidades</th>
+            <th>História Obstétrica</th>
+            <th>Condições Gestacionais</th>
+            <th class="sortable" data-sort="desfecho">Desfecho</th>
+            <th class="sortable" data-sort="profissional">Profissional</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for registro in registros %}
+          <tr>
+            <td>{{ registro.user_id }}</td>
+            <td>{{ registro.codigo_ficha }}</td>
+            <td>{{ registro.nome_gestante }}</td>
+            <td>{{ registro.data_nasc }}</td>
+            <td>{{ registro.telefone }}</td>
+            <td>{{ registro.municipio }}</td>
+            <td>{{ registro.ubs }}</td>
+            <td>{{ registro.acs }}</td>
+            <td>{{ registro.periodo_gestacional }}</td>
+            <td>{{ registro.data_envio }}</td>
+            <td>{{ registro.pontuacao_total }}</td>
+            <td class="{% if registro.classificacao_risco == 'Risco Habitual' %}risco-habitual{% elif registro.classificacao_risco == 'Risco Intermediário' %}risco-intermediario{% else %}risco-alto{% endif %}">
+              {{ registro.classificacao_risco }}
+            </td>
+            <td>{{ registro.imc if registro.imc is not none else '-' }}</td>
+            <td>{{ registro.caracteristicas }}</td>
+            <td>{{ registro.avaliacao_nutricional }}</td>
+            <td>{{ registro.comorbidades }}</td>
+            <td>{{ registro.historia_obstetrica }}</td>
+            <td>{{ registro.condicoes_gestacionais }}</td>
+            <td>{{ registro.desfecho if registro.desfecho else '-' }}</td>
+            <td>{{ registro.profissional }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if not registros %}
+        <p style="text-align: center; margin-top: 1rem; color: var(--primary);">Nenhum registro disponível.</p>
+      {% endif %}
+      <div class="pagination">
+        <button id="prev-page" class="button--nav" disabled><i class="fas fa-chevron-left icon"></i> Anterior</button>
+        <span id="page-info">Página <span id="current-page">1</span> de <span id="total-pages">1</span></span>
+        <button id="next-page" class="button--nav"><i class="fas fa-chevron-right icon"></i> Próximo</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Função para obter o token CSRF do cookie
+    function getCsrfToken() {
+      const name = 'csrf_token=';
+      const decodedCookie = decodeURIComponent(document.cookie);
+      const cookies = decodedCookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        if (cookie.indexOf(name) === 0) {
+          return cookie.substring(name.length, cookie.length);
+        }
+      }
+      return '';
+    }
+
+    // Função de logout
+    function logout() {
+      const logoutBtn = document.getElementById('logout-btn');
+      logoutBtn.disabled = true;
+      logoutBtn.textContent = 'Saindo...';
+
+      fetch('/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': getCsrfToken()
+        },
+        credentials: 'same-origin'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          window.location.href = '/';
+        } else {
+          throw new Error(data.message || 'Erro ao fazer logout.');
+        }
+      })
+      .catch(error => {
+        console.error('Erro ao fazer logout:', error);
+        logoutBtn.disabled = false;
+        logoutBtn.textContent = 'Sair';
+        const flashContainer = document.querySelector('.container');
+        const flashMessage = document.createElement('div');
+        flashMessage.className = 'flash-message danger';
+        flashMessage.textContent = `Erro ao fazer logout: ${error.message}`;
+        flashContainer.insertBefore(flashMessage, flashContainer.querySelector('.form-group'));
+        setTimeout(() => flashMessage.remove(), 5000);
+      });
+    }
+
+    // Função para ordenar a tabela e gerenciar paginação
+    document.addEventListener('DOMContentLoaded', function () {
+      const table = document.getElementById('relatorio-table');
+      const tbody = table.querySelector('tbody');
+      const headers = table.querySelectorAll('th.sortable');
+      let sortDirection = {};
+      let currentSort = null;
+      const rowsPerPage = 100;
+      let currentPage = 1;
+      let rows = Array.from(tbody.querySelectorAll('tr'));
+      const totalPages = Math.ceil(rows.length / rowsPerPage);
+      const prevPageBtn = document.getElementById('prev-page');
+      const nextPageBtn = document.getElementById('next-page');
+      const currentPageSpan = document.getElementById('current-page');
+      const totalPagesSpan = document.getElementById('total-pages');
+
+      // Atualizar informações da página
+      totalPagesSpan.textContent = totalPages;
+      currentPageSpan.textContent = currentPage;
+
+      function updateTable() {
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        rows.forEach((row, index) => {
+          row.style.display = (index >= start && index < end) ? '' : 'none';
+        });
+
+        // Atualizar estado dos botões
+        prevPageBtn.disabled = currentPage === 1;
+        nextPageBtn.disabled = currentPage === totalPages;
+        currentPageSpan.textContent = currentPage;
+      }
+
+      // Inicializar tabela
+      updateTable();
+
+      // Evento para página anterior
+      prevPageBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          updateTable();
+        }
+      });
+
+      // Evento para próxima página
+      nextPageBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          updateTable();
+        }
+      });
+
+      // Função para ordenar a tabela
+      headers.forEach(header => {
+        header.addEventListener('click', () => {
+          const sortKey = header.getAttribute('data-sort');
+          if (currentSort === sortKey) {
+            sortDirection[sortKey] = !sortDirection[sortKey];
+          } else {
+            sortDirection = {};
+            sortDirection[sortKey] = true;
+            headers.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+          }
+          currentSort = sortKey;
+
+          header.classList.add(sortDirection[sortKey] ? 'sort-asc' : 'sort-desc');
+          sortTable(sortKey, sortDirection[sortKey]);
+        });
+      });
+
+      function sortTable(key, ascending) {
+        rows.sort((a, b) => {
+          let aValue = a.querySelector(`td:nth-child(${Array.from(headers).findIndex(h => h.getAttribute('data-sort') === key) + 1})`).textContent.trim();
+          let bValue = b.querySelector(`td:nth-child(${Array.from(headers).findIndex(h => h.getAttribute('data-sort') === key) + 1})`).textContent.trim();
+
+          // Conversão para números se possível (para colunas como Pontuação Total e IMC)
+          if (!isNaN(aValue) && !isNaN(bValue)) {
+            aValue = parseFloat(aValue);
+            bValue = parseFloat(bValue);
+          } else if (key === 'data_envio' || key === 'data_nasc') {
+            // Ordenação por datas (formato DD/MM/YYYY)
+            aValue = aValue.split('/').reverse().join('');
+            bValue = bValue.split('/').reverse().join('');
+          }
+
+          if (aValue < bValue) return ascending ? -1 : 1;
+          if (aValue > bValue) return ascending ? 1 : -1;
+          return 0;
+        });
+
+        // Reorganizar as linhas no tbody
+        while (tbody.firstChild) {
+          tbody.removeChild(tbody.firstChild);
+        }
+        rows.forEach(row => tbody.appendChild(row));
+
+        // Resetar para a primeira página após ordenação
+        currentPage = 1;
+        updateTable();
+      }
+
+      // Função para exportar para CSV
+      document.getElementById('export-csv').addEventListener('click', function () {
+        const rows = Array.from(document.querySelectorAll('#relatorio-table tr'));
+        const csv = [];
+        const delimiter = ';';
+
+        // Cabeçalhos
+        const headers = Array.from(rows[0].querySelectorAll('th')).map(header => {
+          let text = header.textContent.trim();
+          if (text.includes(delimiter) || text.includes('"')) {
+            text = `"${text.replace(/"/g, '""')}"`;
+          }
+          return text;
+        });
+        csv.push(headers.join(delimiter));
+
+        // Linhas
+        for (let i = 1; i < rows.length; i++) {
+          const cols = Array.from(rows[i].querySelectorAll('td')).map(col => {
+            let text = col.textContent.trim();
+            if (text.includes(delimiter) || text.includes('"')) {
+              text = `"${text.replace(/"/g, '""')}"`;
+            }
+            return text;
+          });
+          csv.push(cols.join(delimiter));
+        }
+
+        // Criar o arquivo CSV com BOM UTF-8
+        const csvContent = csv.join('\n');
+        const bom = '\uFEFF';
+        const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'relatorio_administrativo.csv';
+        link.click();
+      });
+    });
+  </script>
+</body>
+</html>
